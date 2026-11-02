@@ -74,6 +74,17 @@ def remove_container(name):
         run('docker', 'rm', '-f', name, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
 
 
+def prune_orphan_containers(states):
+    # Called only while holding the global deployment lock: no other activation
+    # can have a live candidate that has not yet been written into its state.
+    keep = {state.get('container') for state in states}
+    result = run('docker', 'ps', '-a', '--filter', 'label=unipat.preview.branch',
+                 '--format', '{{.Names}}', capture_output=True)
+    for name in result.stdout.splitlines():
+        if name not in keep:
+            remove_container(name)
+
+
 def check_health(host, commit):
     request = urllib.request.Request('http://127.0.0.1/_health', headers={'Host': host})
     with urllib.request.urlopen(request, timeout=8) as response:
@@ -143,6 +154,7 @@ def main():
         if gen < state.get('generation', [0, 0]):
             print('Superseded deployment skipped')
             return
+        prune_orphan_containers([json.loads(p.read_text()) for p in (BASE / 'state').glob('*.json')])
         route = BASE / 'nginx' / (key + '.conf')
         previous_route = route.read_text() if route.exists() else None
         if action == 'remove':
