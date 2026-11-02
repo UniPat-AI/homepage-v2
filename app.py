@@ -17,8 +17,8 @@ BLOG_DIR = BASE_DIR / "content" / "blog"
 BENCHMARKS_DIR = BASE_DIR / "content" / "benchmarks"
 # 待定稿的 Blog 候选版本：只能通过 /blog/preview/<slug> 访问，不进列表和 sitemap
 BLOG_PREVIEW_DIR = BASE_DIR / "content" / "blog_previews"
-# Training & Validation OTS 页面数据：新的训练结果只需改这个文件
-OTS_CATALOG = BASE_DIR / "content" / "ots" / "catalog.json"
+# Public OTS data lives under static/ so the trusted preview packager includes it.
+OTS_CATALOG = BASE_DIR / "static" / "data" / "ots.json"
 
 # CDN URL 配置 (仅生产环境设置，staging 留空使用 OSS 直连)
 CDN_URL = os.environ.get("CDN_URL", "").rstrip("/")

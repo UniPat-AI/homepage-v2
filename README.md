@@ -46,3 +46,10 @@ python deploy/validate.py
 Runtime versions are pinned in `requirements.lock`. When dependencies change,
 update the lock file as well as `requirements.txt` and run the checks with Python
 3.11 before pushing. No credentials belong in the repository.
+
+## OTS catalog
+
+Edit `static/data/ots.json` to update the Training & Validation OTS page.
+This data is public and ships through the existing `static/` packaging rule.
+Branch previews use the trusted packager from `main`, so adding a new content
+directory only to a feature branch's allowlist does not include it in previews.
