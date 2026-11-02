@@ -92,11 +92,28 @@ deletion uses the workflow on the default branch to remove its container and rou
 
 Environment `preview`:
 
-- Variables: `PREVIEW_HOST=43.106.60.226`, `PREVIEW_USER=unipat-preview`,
-  `PREVIEW_DOMAIN=unipat.43.106.60.226.sslip.io`.
-- Secrets: `PREVIEW_SSH_KEY`, `PREVIEW_KNOWN_HOSTS`; separate from production.
-- Temporary public HTTP access. Nginx adds `X-Robots-Tag: noindex, nofollow,
-  noarchive`; the app also returns `Disallow: /` on non-production hosts.
+- Variables: `PREVIEW_HOST=10.0.0.214`, `PREVIEW_USER=unipat-preview`,
+  `PREVIEW_DOMAIN=unipat.10.0.0.214.sslip.io`,
+  `PREVIEW_RELAY_HOST=43.106.60.226`, `PREVIEW_RELAY_USER=unipat-ci-relay`.
+- Secrets: `PREVIEW_SSH_KEY`, `PREVIEW_KNOWN_HOSTS`, `PREVIEW_RELAY_SSH_KEY`,
+  `PREVIEW_RELAY_KNOWN_HOSTS`; separate from production.
+- 内网 HTTP 访问，需要飞连授予 `10.0.0.214:80` 的访问权限。Nginx 只允许
+  私网和回环来源；不信任客户端提供的 `X-Forwarded-For` 作为访问控制依据。
+  域名解析到私网地址，旧公网预览路由已移除。robots/noindex 仅用于防索引。
+
+GitHub-hosted runners stay outside the company network. The private server runs
+`unipat-preview-tunnel.service`, opening an outbound SSH connection to the old
+server. The reverse forward listens **only on `127.0.0.1:22022`** there and leads
+only to the new server's SSH port. CI uses a separate relay key and `ProxyJump`;
+its relay account can only connect to that exact loopback port. Neither account
+has a shell or general forwarding rights. The inner deployment key still permits
+only SFTP and the bounded preview API. HTTP is never forwarded through this relay.
+The old server must remain available as a deployment relay; website containers
+and source releases now run on `10.0.0.214`.
+
+The workflow validates the deployed commit with the authenticated `health` API,
+which probes the real Nginx route on the private server's loopback interface. It
+does not try to fetch a private preview URL from GitHub's public runner.
 
 Server layout:
 
@@ -109,8 +126,9 @@ Server layout:
 - Uploads: `/opt/unipat-previews/incoming`, owned by `unipat-preview`.
 - Releases and state: `/opt/unipat-previews/releases/<branch-key>/` and `state/`.
 - Nginx routes: `/opt/unipat-previews/nginx/*.conf` on the internal Docker network.
-  The existing Caddy proxies only the dedicated preview suffix. Activation health
-  checks traverse that complete route through Caddy on host loopback port 80.
+  The gateway uses `nginx-intranet.conf`, connects to a separate ingress bridge,
+  and publishes port 80 only on `10.0.0.214` and `127.0.0.1`. Branch containers
+  remain on the internal bridge. Health checks traverse Nginx on loopback port 80.
 - Root-owned `bundle.py` and `client.py` in `/usr/local/lib/unipat-preview`.
 
 Each branch runs as UID 65532 with a read-only filesystem, read-only source mount,
@@ -129,10 +147,5 @@ At most ten branches run concurrently; delete unused branches to free capacity.
 
 Infrastructure source is in `deploy/preview/`. These host helpers are installed
 by an administrator, so updating them in Git does not silently update the host.
-The Caddy change is backed up in `/opt/unipat-previews/Caddyfile.before-preview`.
-If the existing Caddy container is recreated by another site's deployment, preserve
-its `unipat-preview` network attachment and the dedicated preview host block.
-
-To move previews to intranet-only access later, replace the public Caddy route
-with an internal/VPN-facing gateway and update `PREVIEW_DOMAIN`. Merely hiding
-DNS or using robots.txt is not an access restriction.
+迁移配置见 `deploy/preview/intranet.md`。原服务器只保留部署中继及回滚备份，
+不得恢复公网预览路由，除非用户明确重新授权公网访问。

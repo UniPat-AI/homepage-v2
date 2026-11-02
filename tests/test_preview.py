@@ -1,4 +1,5 @@
 import importlib.util
+import io
 import json
 from pathlib import Path
 import sys
@@ -16,6 +17,23 @@ spec.loader.exec_module(server)
 
 
 class PreviewTests(unittest.TestCase):
+    def test_health_requires_exact_commit_and_rejects_caller_selected_urls(self):
+        request = dict(action='health', branch=encode_branch('feature/test'), commit='a'*40, run_id='100', attempt='1')
+        self.assertEqual(server.parse_request(json.dumps(request)), request)
+        for bad in [dict(request, url='http://10.0.0.1'), dict(request, commit='bad'), dict(request, commit=''), {k:v for k,v in request.items() if k != 'commit'}]:
+            with self.assertRaises(ValueError):
+                server.parse_request(json.dumps(bad))
+
+    def test_health_checks_local_gateway_and_exact_release(self):
+        with patch.object(server.urllib.request, 'urlopen', return_value=io.BytesIO(b'{"release":"abc"}')) as fetch:
+            self.assertEqual(server.check_health('up-test.example.com', 'abc'), {'release':'abc'})
+            request = fetch.call_args.args[0]
+            self.assertEqual(request.full_url, 'http://127.0.0.1/_health')
+            self.assertEqual(request.get_header('Host'), 'up-test.example.com')
+        with patch.object(server.urllib.request, 'urlopen', return_value=io.BytesIO(b'{"release":"old"}')):
+            with self.assertRaises(RuntimeError):
+                server.check_health('up-test.example.com', 'new')
+
     def test_cancelled_run_containers_are_pruned_without_removing_live_previews(self):
         with patch.object(server, 'run', return_value=SimpleNamespace(stdout='up-live\nup-abandoned\n')), patch.object(server, 'remove_container') as remove:
             server.prune_orphan_containers([{'container':'up-live'}, {'deleted':True}])
