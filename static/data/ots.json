@@ -12,7 +12,7 @@
     {"id": "automation-bench", "dataset_name": "Automation Bench", "model": "Qwen3.8-27B", "before_pct": 39.2, "after_pct": 49.2, "before_display": "39.20%", "after_display": "49.20%", "delta_display": "+10pp", "eval_metric": "pass@1"},
     {"id": "frontier-science-research", "dataset_name": "Frontier Science-Research", "model": "GLM-5.3", "before_pct": 25.0, "after_pct": 37.78, "before_display": "25.00%", "after_display": "37.78%", "delta_display": "+12.78pp", "eval_metric": "success rate"},
     {"id": "apex-agent-v1", "dataset_name": "Apex-agent v1.0", "model": "Qwen3.8-27B", "before_pct": 33.5, "after_pct": 40.2, "before_display": "33.50%", "after_display": "40.20%", "delta_display": "+6.7pp", "eval_metric": "pass@1"},
-    {"id": "scicode-verified-main", "dataset_name": "SciCode-verified Main (w/ bg)", "model": "Qwen3.8-27B", "before_pct": 66.15, "after_pct": 82.81, "before_display": "66.15%", "after_display": "82.81%", "delta_display": "+16.66pp", "eval_metric": "pass@1"}
+    {"id": "scicode-verified-main", "dataset_name": "SciCode Verified", "model": "Qwen3.8-27B", "before_pct": 82.93, "after_pct": 92.1, "before_display": "82.93%", "after_display": "92.10%", "delta_display": "+9.18pp", "eval_metric": "Subtask avg@3 · With background"}
   ],
   "card_cta_label": "Request the Full Catalog",
   "card_cta_href": "mailto:business@unipat.ai",
