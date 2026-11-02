@@ -77,8 +77,10 @@ git push -u origin feature/website-update
 按照上面的[获取分支预览地址](#获取分支预览地址)步骤查看和分享链接，无需先创建 PR。
 
 确认预览效果后，创建目标分支为 `main` 的 PR（合并请求）。
-只有 `homepage-v2-maintainers` 团队中的 `zhonggang-dev` 和 `hahongbong` 可以合并；
-分支须与最新 `main` 保持同步，且必需的 `check` 检查通过。
+官网维护者 `zhonggang-dev` 和 `hahongbong` 可以合并；组织所有者也保留 GitHub 的管理员合并权限，
+普通协作者不能合并到 `main`。所有合并都须经过 PR，分支与最新 `main` 保持同步，
+必需的 `check` 检查通过，且 PR 中的讨论已解决。
+满足这些条件后，有权限的人会看到正常的绿色 **`Merge pull request`** 按钮，无需勾选 bypass。
 `main` 禁止直接 push、强制推送和删除。
 合并后会自动触发检查和正式部署，成功后更新 [unipat.ai](https://unipat.ai)。
 也可以从 `main` 手动触发重新部署。
