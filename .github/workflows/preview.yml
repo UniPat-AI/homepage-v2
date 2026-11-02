@@ -9,10 +9,6 @@ on:
 permissions:
   contents: read
 
-concurrency:
-  group: branch-preview-${{ github.event_name == 'delete' && github.event.ref || github.event.workflow_run.head_branch }}
-  cancel-in-progress: true
-
 jobs:
   preview:
     if: >-
