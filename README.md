@@ -1,9 +1,8 @@
-# UniPat official website
+# UniPat 官网
 
-Source for [unipat.ai](https://unipat.ai). This repository contains the published
-homepage, Blog, Benchmarks, Join us, shared visual assets and ScienceVision
-viewers. Design galleries and unpublished blog drafts remain in the separate
-preview project.
+[UniPat 官网](https://unipat.ai)的源代码仓库，包含已发布的首页、Blog、Benchmarks、
+Join us、共用图片与样式，以及 ScienceVision 查看器。
+设计方案展示和未发布的博客草稿保留在单独的预览项目中。
 
 ## 获取分支预览地址
 
@@ -49,9 +48,9 @@ Branch preview
 - **合并到 `main`：检查与生产部署成功后，更新 [正式官网 unipat.ai](https://unipat.ai)。**
 - 当前预览为公网 HTTP，暂不需要飞连。飞书私信和邮件自动通知尚未接入，请通过上述 Actions 入口取链接。
 
-## Develop
+## 本地开发
 
-Use Python 3.11:
+使用 Python 3.11，执行以下命令：
 
 ```sh
 python3.11 -m venv .venv
@@ -60,47 +59,49 @@ python -m pip install -r requirements-production.txt
 flask --app wsgi:app run --port 5589
 ```
 
-## Publish
+启动后访问 [本地网站](http://127.0.0.1:5589)。
+
+## 提交与发布
+
+在自己的分支上提交代码并推送：
 
 ```sh
 git switch -c feature/website-update
 git add <changed-files>
-git commit -m "Update website"
+git commit -m "更新官网内容"
 git push -u origin feature/website-update
 ```
 
-Repository: **https://github.com/UniPat-AI/homepage-v2**.
-Every non-`main` branch push runs checks and deploys a complete, independent
-preview on the test server. Follow [获取分支预览地址](#获取分支预览地址) above to
-find and share its URL. Subsequent pushes update that same URL; deleting the
-branch removes its preview. No PR is needed to get a preview.
+仓库地址：[UniPat-AI/homepage-v2](https://github.com/UniPat-AI/homepage-v2)。
+每次向非 `main` 分支 push，都会先执行检查，通过后在测试服务器部署独立的完整网站。
+按照上面的[获取分支预览地址](#获取分支预览地址)步骤查看和分享链接，无需先创建 PR。
 
-Open a PR targeting `main` after reviewing the preview. Only `zhonggang-dev`
-and `hahongbong` in the `homepage-v2-maintainers` team may merge, and the required
-`check` must pass on an up-to-date branch. Direct pushes, force pushes and deletion
-of `main` are blocked. A successful merge automatically publishes to
-**https://unipat.ai**. Production can also be redeployed manually from `main`.
+确认预览效果后，创建目标分支为 `main` 的 PR（合并请求）。
+只有 `homepage-v2-maintainers` 团队中的 `zhonggang-dev` 和 `hahongbong` 可以合并；
+分支须与最新 `main` 保持同步，且必需的 `check` 检查通过。
+`main` 禁止直接 push、强制推送和删除。
+合并后会自动触发检查和正式部署，成功后更新 [unipat.ai](https://unipat.ai)。
+也可以从 `main` 手动触发重新部署。
 
-Previews temporarily use public HTTP addresses under
-`*.unipat.43.106.60.226.sslip.io`. They contain the website's public content;
-do not put confidential content or production credentials in a preview branch.
+预览目前使用 `*.unipat.43.106.60.226.sslip.io` 下的公网 HTTP 地址。
+预览分支仅应包含官网公开内容，不要放入保密资料或生产环境凭据。
 
-The deployment uses a dedicated SSH account, validates a checksummed release,
-installs its own Python environment, checks public pages and assets, then switches
-the active release. If server or HTTPS checks fail during activation, the previous
-release is restored. The current, previous and five most recent CI releases are
-retained. The original website service and its separate backup are preserved.
+正式部署使用专用 SSH 账号，校验发布包、安装独立 Python 环境并检查页面和静态资源，
+然后切换到新版本。切换过程中若服务器或 HTTPS 检查失败，会恢复上一版本。
+服务器保留当前版本、上一版本及最近五次 CI 发布版本；原官网服务及其独立备份也保留，供回滚使用。
 
-See [deployment operations](deploy/README.md) for configuration and rollback.
+部署配置与回滚操作详见[部署运维说明](deploy/README.md)。
 
-## Check locally
+## 本地检查
+
+提交前可以运行以下检查：
 
 ```sh
 python -m unittest discover -s tests -v
 python deploy/validate.py
 ```
 
-Runtime versions are pinned in `requirements.lock`. When dependencies change,
-update the lock file as well as `requirements.txt` and run the checks with Python
-3.11 before pushing. A deployment administrator must also rebuild the fixed
-preview runtime image after dependency changes. No credentials belong in the repository.
+运行时依赖版本固定在 `requirements.lock` 中。修改依赖时，同时更新该锁文件和
+`requirements.txt`，并在 push 前使用 Python 3.11 完成检查。
+依赖变更后，还需要部署管理员重新构建预览环境的固定运行镜像。
+不要将任何密钥或密码提交到仓库。
