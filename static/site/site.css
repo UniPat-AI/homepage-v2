@@ -279,6 +279,14 @@ body:not(.is-reading) .markdown :is(.bv-toc, .ex-toc, .ec-toc, .tb-toc, .sb-toc,
 .ots-metric { font-size: 12.5px; color: var(--muted); }
 /* Every card in a row shares the same header height and quiet dividing rule. */
 .ots-divider { height: 1px; margin: 28px 0 22px; background: rgba(221, 227, 241, .24); }
+/* The full track is 100%: grey is the baseline, lilac is the measured gain. */
+.ots-divider--comparison { position: relative; height: 2px; border-radius: 2px; background: rgba(221, 227, 241, .1); }
+.ots-divider--comparison i { position: absolute; top: 0; bottom: 0; }
+.ots-baseline { left: 0; width: calc(var(--before) - 1px); background: rgba(221, 227, 241, .46); border-radius: 2px 0 0 2px; }
+.ots-gain { left: var(--before); width: calc(var(--after) - var(--before)); background: linear-gradient(90deg, #a3b2d8, #c2b7ee); border-radius: 0 2px 2px 0; transform-origin: left; }
+.ots-card.is-in .ots-gain { animation: ots-gain-in .9s var(--ease) .25s backwards; }
+@keyframes ots-gain-in { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+.ots-divider--comparison + .ots-scores .now { color: var(--lilac); }
 .ots-scores { display: flex; align-items: baseline; gap: 12px; font-size: 15px; font-variant-numeric: tabular-nums; }
 .ots-scores .was { color: var(--muted); }
 .ots-scores .to { color: var(--muted); }

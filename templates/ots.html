@@ -29,7 +29,9 @@
                 <h3>{{ c.dataset_name }}</h3>
                 <p class="ots-model">{{ c.model }}{% if c.eval_metric %}<span class="ots-metric"><span class="sr-only">, measured by </span>{{ c.eval_metric }}</span>{% endif %}</p>
                 </div>
-                <div class="ots-divider" aria-hidden="true"></div>
+                <div class="ots-divider ots-divider--comparison" style="--before: {{ c.before_pct }}%; --after: {{ c.after_pct }}%" aria-hidden="true">
+                    <i class="ots-baseline"></i><i class="ots-gain"></i>
+                </div>
                 <p class="ots-scores">
                     <span class="sr-only">Before training </span><span class="was">{{ c.before_display }}</span>
                     <span class="to" aria-hidden="true">→</span>
