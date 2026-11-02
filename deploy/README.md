@@ -18,13 +18,13 @@ Environment: `production`, URL `https://unipat.ai`. Its deployment branch policy
 allows only the branch `main`. The SSH secrets must never be copied into repository
 secrets: branch authors can change their own workflow files.
 
-`main` requires a PR, the GitHub Actions `check` on an up-to-date branch, and
-resolved conversations, with administrator enforcement. Force pushes and deletion
-are disabled. A separate active update-restriction ruleset allows only the
-`homepage-v2-maintainers` team to bypass **through pull requests**, so it does not
-bypass the separate required checks. The team contains `zhonggang-dev` and
-`hahongbong`. Organization owners retain GitHub's organization administration
-powers; changes to the rules or team membership must remain deliberate.
+`main` 使用标准分支保护：必须经过 PR，分支保持最新，GitHub Actions 的 `check`
+检查通过，且讨论全部解决。这些要求也适用于管理员；禁止强制推送和删除。
+写入允许名单为 `zhonggang-dev` 和 `hahongbong`，普通协作者不能合并到 `main`。
+组织所有者仍有 GitHub 的管理员合并权限，这是当前明确保留的权限安排。
+额外的 `Only website maintainers may merge main` 更新限制规则已停用并保留配置，
+因此满足检查要求后，授权人员可直接使用绿色合并按钮，无需勾选 bypass。
+不要重新启用这条额外规则，除非明确要恢复严格两人限制及其手动 bypass 操作。
 
 Actions holds read-only repository permissions. The SSH user cannot log in with
 the server administrator password; its only sudo entry runs the root-owned
