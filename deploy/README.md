@@ -108,8 +108,9 @@ Server layout:
   has no Docker-group membership, interactive shell access via its key, or general sudo.
 - Uploads: `/opt/unipat-previews/incoming`, owned by `unipat-preview`.
 - Releases and state: `/opt/unipat-previews/releases/<branch-key>/` and `state/`.
-- Nginx routes: `/opt/unipat-previews/nginx/*.conf`, with a loopback-only gateway
-  on `127.0.0.1:8089`. The existing Caddy proxies only the dedicated preview suffix.
+- Nginx routes: `/opt/unipat-previews/nginx/*.conf` on the internal Docker network.
+  The existing Caddy proxies only the dedicated preview suffix. Activation health
+  checks traverse that complete route through Caddy on host loopback port 80.
 - Root-owned `bundle.py` and `client.py` in `/usr/local/lib/unipat-preview`.
 
 Each branch runs as UID 65532 with a read-only filesystem, read-only source mount,
