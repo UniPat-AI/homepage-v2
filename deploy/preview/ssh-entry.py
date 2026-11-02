@@ -3,7 +3,7 @@
 import os
 import sys
 
-command = os.environ.get('SSH_ORIGINAL_COMMAND', '')
+command = os.environ.get('SSH_ORIGINAL_COMMAND', '').strip()
 if command == 'preview':
     os.execv('/usr/bin/sudo', ['sudo', '-n', '/usr/local/sbin/unipat-preview'])
 elif command in ('/usr/libexec/openssh/sftp-server', 'internal-sftp', 'sftp'):
