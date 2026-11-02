@@ -1,4 +1,5 @@
 name: Branch previews
+run-name: Preview ${{ github.event.workflow_run.head_branch || github.event.ref }}
 
 on:
   workflow_run:
@@ -18,7 +19,9 @@ jobs:
       (github.event_name == 'delete' && github.event.ref_type == 'branch' && github.event.ref != 'main')
     runs-on: ubuntu-latest
     timeout-minutes: 20
-    environment: preview
+    environment:
+      name: preview
+      url: ${{ steps.preview.outputs.url }}
     env:
       PREVIEW_DOMAIN: ${{ vars.PREVIEW_DOMAIN }}
       SOURCE_SHA: ${{ github.event.workflow_run.head_sha }}
