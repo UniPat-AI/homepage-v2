@@ -19,14 +19,27 @@ flask --app wsgi:app run --port 5589
 ## Publish
 
 ```sh
+git switch -c feature/website-update
 git add <changed-files>
 git commit -m "Update website"
-git push origin main
+git push -u origin feature/website-update
 ```
 
-GitHub Actions checks every push and pull request. A successful push to `main`
-automatically publishes to **https://unipat.ai**. Other branches only run checks.
-The workflow can also be run manually on `main` from the Actions tab.
+Repository: **https://github.com/UniPat-AI/homepage-v2**.
+Every non-`main` branch push runs checks and deploys a complete, independent
+preview on the test server. Open the **Branch previews** Actions run and find
+the **Branch preview** link in its summary. Subsequent pushes update that same
+URL; deleting the branch removes its preview. No PR is needed to get a preview.
+
+Open a PR targeting `main` after reviewing the preview. Only `zhonggang-dev`
+and `hahongbong` in the `homepage-v2-maintainers` team may merge, and the required
+`check` must pass on an up-to-date branch. Direct pushes, force pushes and deletion
+of `main` are blocked. A successful merge automatically publishes to
+**https://unipat.ai**. Production can also be redeployed manually from `main`.
+
+Previews temporarily use public HTTP addresses under
+`*.unipat.43.106.60.226.sslip.io`. They contain the website's public content;
+do not put confidential content or production credentials in a preview branch.
 
 The deployment uses a dedicated SSH account, validates a checksummed release,
 installs its own Python environment, checks public pages and assets, then switches
@@ -45,4 +58,5 @@ python deploy/validate.py
 
 Runtime versions are pinned in `requirements.lock`. When dependencies change,
 update the lock file as well as `requirements.txt` and run the checks with Python
-3.11 before pushing. No credentials belong in the repository.
+3.11 before pushing. A deployment administrator must also rebuild the fixed
+preview runtime image after dependency changes. No credentials belong in the repository.

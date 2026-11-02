@@ -2,9 +2,9 @@
 
 ## GitHub Actions
 
-Repository: `zhonggang-dev/homepage-v2`; production branch: `main`.
+Repository: `UniPat-AI/homepage-v2`; production branch: `main`.
 
-Repository secrets:
+Secrets in the `production` environment (not repository-level secrets):
 
 - `DEPLOY_SSH_KEY`: dedicated Ed25519 private key for the `unipat-deploy` account.
 - `DEPLOY_KNOWN_HOSTS`: independently verified SSH host key entry for the server.
@@ -14,7 +14,17 @@ Repository variables:
 - `DEPLOY_HOST`: `47.236.21.40`.
 - `DEPLOY_USER`: `unipat-deploy`.
 
-Environment: `production`, URL `https://unipat.ai`.
+Environment: `production`, URL `https://unipat.ai`. Its deployment branch policy
+allows only the branch `main`. The SSH secrets must never be copied into repository
+secrets: branch authors can change their own workflow files.
+
+`main` requires a PR, the GitHub Actions `check` on an up-to-date branch, and
+resolved conversations, with administrator enforcement. Force pushes and deletion
+are disabled. A separate active update-restriction ruleset allows only the
+`homepage-v2-maintainers` team to bypass **through pull requests**, so it does not
+bypass the separate required checks. The team contains `zhonggang-dev` and
+`hahongbong`. Organization owners retain GitHub's organization administration
+powers; changes to the rules or team membership must remain deliberate.
 
 Actions holds read-only repository permissions. The SSH user cannot log in with
 the server administrator password; its only sudo entry runs the root-owned
@@ -69,6 +79,59 @@ exclusively publishes the new service. It does not modify staging or Echo.
 ## Existing page issues
 
 The initial import preserves the current published UI. The source still has
-lowercased sitemap slugs that do not match case-sensitive content filenames, and
-ScienceVision has horizontal overflow at narrow mobile widths. These predate the
-deployment integration; ordinary navigation and the ScienceVision 3D viewer work.
+lowercased sitemap slugs that do not match case-sensitive content filenames.
+ScienceVision's mobile overflow and axis alignment were fixed in PR #2.
+
+## Independent branch previews
+
+The `Branch previews` workflow deploys non-main branch pushes after checks pass.
+It never deploys code from fork PRs. The branch name becomes a readable prefix
+plus a 12-character SHA-256 suffix, so names such as `feature/a` and `feature-a`
+cannot collide. The Actions summary contains the stable preview URL. Branch
+deletion uses the workflow on the default branch to remove its container and route.
+
+Environment `preview`:
+
+- Variables: `PREVIEW_HOST=43.106.60.226`, `PREVIEW_USER=unipat-preview`,
+  `PREVIEW_DOMAIN=unipat.43.106.60.226.sslip.io`.
+- Secrets: `PREVIEW_SSH_KEY`, `PREVIEW_KNOWN_HOSTS`; separate from production.
+- Temporary public HTTP access. Nginx adds `X-Robots-Tag: noindex, nofollow,
+  noarchive`; the app also returns `Disallow: /` on non-production hosts.
+
+Server layout:
+
+- Root-owned configuration: `/etc/unipat-preview.json`.
+- Root-owned deployment entrypoint: `/usr/local/sbin/unipat-preview`, accepting
+  **no command-line arguments** and only a bounded JSON request on stdin.
+- Forced SSH command: `/usr/local/bin/unipat-preview-ssh`, allowing SFTP and the
+  `preview` API only. Root owns the account's SSH authorization files; the account
+  has no Docker-group membership, interactive shell access via its key, or general sudo.
+- Uploads: `/opt/unipat-previews/incoming`, owned by `unipat-preview`.
+- Releases and state: `/opt/unipat-previews/releases/<branch-key>/` and `state/`.
+- Nginx routes: `/opt/unipat-previews/nginx/*.conf`, with a loopback-only gateway
+  on `127.0.0.1:8089`. The existing Caddy proxies only the dedicated preview suffix.
+- Root-owned `bundle.py` and `client.py` in `/usr/local/lib/unipat-preview`.
+
+Each branch runs as UID 65532 with a read-only filesystem, read-only source mount,
+a 128MB temporary filesystem, 512MB memory, one CPU, 128 PIDs, no Linux capabilities,
+no Docker socket or production credentials, and an internal Docker network without
+general outbound Internet access. External browser assets still load in the visitor's
+browser. New dependency locks require an administrator to rebuild the trusted runtime
+image; branch-controlled install scripts never execute on the host.
+
+The server validates upload paths, ownership, archive contents and checksums. It
+starts a new container and checks its exact release before switching Nginx. Failed
+health checks restore the previous route. A server lock and workflow generation
+ordering prevent older completed runs from replacing newer deployments; deletion
+leaves a tombstone to prevent a cancelled older run from recreating a deleted preview.
+At most ten branches run concurrently; delete unused branches to free capacity.
+
+Infrastructure source is in `deploy/preview/`. These host helpers are installed
+by an administrator, so updating them in Git does not silently update the host.
+The Caddy change is backed up in `/opt/unipat-previews/Caddyfile.before-preview`.
+If the existing Caddy container is recreated by another site's deployment, preserve
+its `unipat-preview` network attachment and the dedicated preview host block.
+
+To move previews to intranet-only access later, replace the public Caddy route
+with an internal/VPN-facing gateway and update `PREVIEW_DOMAIN`. Merely hiding
+DNS or using robots.txt is not an access restriction.
