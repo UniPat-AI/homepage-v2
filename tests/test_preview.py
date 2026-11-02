@@ -3,6 +3,8 @@ import json
 from pathlib import Path
 import sys
 import unittest
+from unittest.mock import patch
+from types import SimpleNamespace
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / 'deploy/preview'))
@@ -14,6 +16,18 @@ spec.loader.exec_module(server)
 
 
 class PreviewTests(unittest.TestCase):
+    def test_cancelled_run_containers_are_pruned_without_removing_live_previews(self):
+        with patch.object(server, 'run', return_value=SimpleNamespace(stdout='up-live\nup-abandoned\n')), patch.object(server, 'remove_container') as remove:
+            server.prune_orphan_containers([{'container':'up-live'}, {'deleted':True}])
+        remove.assert_called_once_with('up-abandoned')
+
+    def test_container_hostname_fits_docker_dns_with_real_run_ids(self):
+        key = branch_key('codex/' + 'x' * 200)
+        version = 'a' * 12 + '-' + '9' * 20 + '-' + '9' * 6
+        name = server.container_name(key, version)
+        self.assertLessEqual(len(name), 63)
+        self.assertRegex(name, r'^[a-z0-9-]+$')
+
     def test_privileged_request_is_bounded_and_has_no_extra_fields(self):
         request = dict(action='deploy', branch=encode_branch('feature/test'), commit='a'*40, run_id='100', attempt='1')
         self.assertEqual(server.parse_request(json.dumps(request)), request)

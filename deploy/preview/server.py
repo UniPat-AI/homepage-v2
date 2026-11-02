@@ -40,6 +40,11 @@ def generation(run_id, attempt):
     return [int(run_id), int(attempt)]
 
 
+def container_name(key, version):
+    # Docker's embedded DNS requires each hostname label to fit in 63 characters.
+    return 'up-' + key.rsplit('-', 1)[-1] + '-' + version
+
+
 def nginx_text(host, container):
     # Both strings are constructed from validated identifiers, never raw ref names.
     if not re.fullmatch('[a-z0-9.-]+', host) or not re.fullmatch('[a-z0-9-]+', container):
@@ -69,8 +74,19 @@ def remove_container(name):
         run('docker', 'rm', '-f', name, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
 
 
+def prune_orphan_containers(states):
+    # Called only while holding the global deployment lock: no other activation
+    # can have a live candidate that has not yet been written into its state.
+    keep = {state.get('container') for state in states}
+    result = run('docker', 'ps', '-a', '--filter', 'label=unipat.preview.branch',
+                 '--format', '{{.Names}}', capture_output=True)
+    for name in result.stdout.splitlines():
+        if name not in keep:
+            remove_container(name)
+
+
 def check_health(host, commit):
-    request = urllib.request.Request('http://127.0.0.1:8089/_health', headers={'Host': host})
+    request = urllib.request.Request('http://127.0.0.1/_health', headers={'Host': host})
     with urllib.request.urlopen(request, timeout=8) as response:
         if json.load(response).get('release') != commit:
             raise RuntimeError('Preview health commit mismatch')
@@ -138,6 +154,7 @@ def main():
         if gen < state.get('generation', [0, 0]):
             print('Superseded deployment skipped')
             return
+        prune_orphan_containers([json.loads(p.read_text()) for p in (BASE / 'state').glob('*.json')])
         route = BASE / 'nginx' / (key + '.conf')
         previous_route = route.read_text() if route.exists() else None
         if action == 'remove':
@@ -158,7 +175,7 @@ def main():
         if not state.get('container') and len(active) >= config.get('max_previews', 10):
             raise RuntimeError('Preview capacity reached; delete unused branches first')
         version = commit[:12] + '-' + '-'.join(map(str, gen))
-        container = key + '-' + version
+        container = container_name(key, version)
         target = BASE / 'releases' / key / version
         archive = BASE / 'incoming' / (key + '-' + version + '.tar.gz')
         if state.get('container') == container:
@@ -194,6 +211,9 @@ def main():
                 except ValueError:
                     pass
                 if attempt == 29:
+                    print(result.stderr[-2000:], file=sys.stderr)
+                    logs = subprocess.run(['docker', 'logs', '--tail', '20', container], capture_output=True, text=True, timeout=10)
+                    print(logs.stderr[-4000:], file=sys.stderr)
                     raise RuntimeError('New preview failed startup health check')
                 time.sleep(1)
             route.write_text(nginx_text(host, container))
