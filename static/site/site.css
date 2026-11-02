@@ -35,6 +35,7 @@ a:focus-visible, button:focus-visible { outline: 1.5px solid var(--lilac); outli
 img { max-width: 100%; }
 .skip { position: absolute; left: 16px; top: -60px; z-index: 50; background: var(--mist); color: var(--ink); padding: 10px 16px; border-radius: 10px; font-weight: 500; }
 .skip:focus { top: 16px; }
+.sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
 
 #field { position: fixed; inset: 0; width: 100%; height: 100%; z-index: 0; pointer-events: none; }
 .page { position: relative; z-index: 1; }
@@ -59,6 +60,7 @@ img { max-width: 100%; }
 .nav a:not(.x)::after { content: ""; position: absolute; left: 0; right: 0; bottom: -4px; height: 1px; background: currentColor; transform: scaleX(0); transform-origin: right; transition: transform .35s; }
 .nav a:not(.x):hover::after, .nav a[aria-current]::after { transform: scaleX(1); transform-origin: left; }
 .nav .x svg { width: 15px; height: 15px; display: block; }
+.nav .nav-short { display: none; }
 
 /* progress rail: which scene of the home page you're in */
 .scenes { position: fixed; z-index: 20; right: 26px; top: 50%; transform: translateY(-50%); display: grid; gap: 14px; }
@@ -252,6 +254,48 @@ body:not(.is-reading) .markdown :is(.bv-toc, .ex-toc, .ec-toc, .tb-toc, .sb-toc,
 .back-link a { text-decoration: none !important; }
 .back-link a:hover { color: #4a5b8c; }
 
+/* ---- training & validation OTS ---- */
+.ots-hero { min-height: 82vh; min-height: 82svh; }
+.ots-hero .col { width: min(760px, 56%); }
+.ots-hero h1 { font-size: clamp(42px, 4.9vw, 80px); line-height: 1; letter-spacing: -.04em; }
+.ots-hero p { max-width: 540px; }
+.btn .arr, .ots-cta .arr { display: inline-block; transition: transform .4s var(--ease); }
+.btn:hover .arr, .ots-cta:hover .arr, .ots-cta:focus-visible .arr { transform: translateX(4px); }
+.ots-results { padding-top: 10px; }
+.ots-grid { list-style: none; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px; }
+.ots-card { position: relative; display: flex; flex-direction: column; padding: 40px 44px 36px; border-radius: 22px; border: 1px solid var(--line); background: rgba(18, 20, 28, .58); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); overflow: hidden; transition: opacity .9s ease calc(var(--si, 0) * 80ms), transform 1s var(--ease) calc(var(--si, 0) * 80ms), border-color .35s, background .35s; }
+/* cursor spotlight (data-spot sets --mx/--my) */
+.ots-card::before { content: ""; position: absolute; inset: 0; z-index: -1; background: radial-gradient(420px circle at var(--mx, 50%) var(--my, 0%), rgba(236, 217, 166, .07), transparent 70%); opacity: 0; transition: opacity .45s; pointer-events: none; }
+.ots-card:hover, .ots-card:focus-within { border-color: rgba(221, 227, 241, .22); background: rgba(24, 27, 37, .7); }
+.ots-card:hover::before, .ots-card:focus-within::before { opacity: 1; }
+.ots-card h3 { font-weight: 500; font-size: clamp(22px, 2vw, 28px); line-height: 1.2; letter-spacing: -.02em; overflow-wrap: anywhere; }
+.ots-model { display: flex; flex-wrap: wrap; align-items: baseline; gap: 2px 14px; color: var(--muted); font-size: 15px; margin-top: 6px; }
+.ots-metric { font-size: 13.5px; color: rgba(139, 144, 163, .78); }
+/* the divider doubles as the score track: base score in mist, the lift in champagne, a 2px gap between */
+.ots-meter { position: relative; height: 3px; margin: 34px 0 30px; border-radius: 3px; background: var(--line); }
+.ots-meter i { position: absolute; top: 0; bottom: 0; border-radius: 3px; transform-origin: left; transform: scaleX(0); transition: transform 1.3s var(--ease); }
+.ots-meter .was { left: 0; width: calc(var(--before) * 1% - 1px); background: rgba(169, 174, 192, .45); transition-delay: .25s; }
+.ots-meter .lift { left: calc(var(--before) * 1% + 1px); width: calc((var(--after) - var(--before)) * 1% - 1px); background: var(--champagne); box-shadow: 0 0 12px rgba(236, 217, 166, .55); transition-delay: .95s; }
+.ots-card.is-in .ots-meter i { transform: none; }
+.ots-scores { display: flex; align-items: baseline; gap: 12px; font-size: 17px; }
+.ots-scores .was { color: var(--muted); }
+.ots-scores .to { color: var(--soft); }
+.ots-scores .now { color: var(--text); }
+.ots-foot { display: flex; justify-content: space-between; align-items: flex-end; gap: 12px 24px; flex-wrap: wrap; margin-top: 6px; }
+.ots-lift { font-weight: 600; font-size: clamp(40px, 3.8vw, 56px); line-height: 1.05; letter-spacing: -.012em; color: var(--champagne); white-space: nowrap; }
+.ots-lift .plus { font-weight: 500; margin-right: .1em; }
+.ots-cta { display: inline-flex; align-items: center; gap: 8px; padding-bottom: 8px; font-weight: 500; font-size: 14px; color: var(--mist); position: relative; white-space: nowrap; transition: color .25s; }
+.ots-cta::after { content: ""; position: absolute; left: 0; right: 0; bottom: 4px; height: 1px; background: currentColor; transform: scaleX(0); transform-origin: right; transition: transform .35s; }
+.ots-cta:hover, .ots-cta:focus-visible { color: var(--champagne); }
+.ots-cta:hover::after, .ots-cta:focus-visible::after { transform: scaleX(1); transform-origin: left; }
+.ots-close { min-height: 76vh; min-height: 76svh; }
+.ots-close .col { width: min(640px, 52%); }
+.ots-close p { color: var(--soft); font-size: 17px; max-width: 600px; }
+.ots-close p.lead { color: var(--text); font-weight: 500; font-size: clamp(26px, 2.6vw, 36px); line-height: 1.15; letter-spacing: -.025em; margin-bottom: 18px; text-wrap: balance; }
+.ots-close p a { color: var(--champagne); text-decoration: underline; text-decoration-color: rgba(236, 217, 166, .4); text-underline-offset: 4px; transition: text-decoration-color .25s; }
+.ots-close p a:hover { text-decoration-color: currentColor; }
+.ots-close .mailbig { margin-top: 34px; }
+
 /* ---- 404 ---- */
 .lost { min-height: 100vh; min-height: 100svh; display: flex; align-items: center; justify-content: center; text-align: center; padding: 120px 0; }
 .lost .col { width: min(620px, 100%); margin: 0 auto; }
@@ -303,6 +347,9 @@ body:not(.is-reading) .markdown :is(.bv-toc, .ex-toc, .ec-toc, .tb-toc, .sb-toc,
     .team > .mono { padding-top: 0; }
     .markdown { max-width: 100%; }
     .paper { border-radius: 22px 22px 0 0; padding-top: 44px; }
+    .ots-hero .col, .ots-close .col { width: 100%; }
+    .ots-grid { grid-template-columns: 1fr; gap: 14px; }
+    .ots-close { min-height: 0; padding-bottom: 90px; }
 }
 @media (max-width: 680px) {
     .brow2 { grid-template-columns: 56px minmax(0, 1fr); gap: 16px; }
@@ -317,6 +364,12 @@ body:not(.is-reading) .markdown :is(.bv-toc, .ex-toc, .ec-toc, .tb-toc, .sb-toc,
     .p { grid-template-columns: 96px minmax(0, 1fr); }
     .phero .count { gap: 20px; }
     .jrole { flex-wrap: wrap; gap: 4px; }
+    .ots-card { padding: 28px 24px 24px; border-radius: 18px; }
+    .ots-meter { margin: 26px 0 22px; }
+}
+@media (max-width: 760px) {
+    .nav .nav-long { display: none; }
+    .nav .nav-short { display: inline; }
 }
 @media (max-width: 420px) {
     .site-header .logo { display: none; }
@@ -325,5 +378,6 @@ body:not(.is-reading) .markdown :is(.bv-toc, .ex-toc, .ec-toc, .tb-toc, .sb-toc,
 @media (prefers-reduced-motion: reduce) {
     *, *::before, *::after { animation: none !important; transition-duration: .01ms !important; }
     [data-split] .w > span, [data-reveal] { transform: none !important; opacity: 1 !important; }
+    .ots-meter i { transform: none !important; }
     html { scroll-behavior: auto; }
 }

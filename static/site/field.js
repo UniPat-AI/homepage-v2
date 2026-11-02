@@ -1,7 +1,7 @@
 /* UniPat particle field — one canvas shared by every page.
    Each [data-scene] element names the shape the particles assemble into while it is
    centred on screen, plus where the shape sits:
-     data-shape  mark | sphere | plane | ring | bars | helix | dust | image
+     data-shape  mark | sphere | plane | ring | bars | helix | gate | dust | image
      data-src    image URL when data-shape="image" (falls back to the mark)
      data-fx/fy  centre as a fraction of the viewport (desktop; mobile is centred)
      data-fs     scale        data-fa  opacity
@@ -78,13 +78,34 @@
         }
         return out;
     }
+    // off-the-shelf data: two facing dot-matrix panels with lit inner edges, rays fanning outward
+    function gate(n) {
+        var out = [], R = rnd(23), edge = n * .18 | 0, panel = n * .5 | 0;
+        var RAYS = [[-.3, -.56], [-.2, -.4], [-.08, -.2], [.08, .2], [.2, .4], [.3, .56]];
+        for (var i = 0; i < n; i++) {
+            var s = i % 2 ? 1 : -1, x, y, z, c;
+            if (i < edge) {
+                // the bright hinge: a tight column of dots on each inner edge
+                x = .06 + R() * .012; y = Math.round((R() * 2 - 1) * 30) / 30 * .34; z = 0; c = R() < .1 ? '#ecd9a6' : '#f6f7fb';
+            } else if (i < edge + panel) {
+                // the panel recedes from the hinge: thinner and shorter toward its far edge
+                var u = Math.round(Math.pow(R(), 1.6) * 22) / 22, h = .34 - u * .1;
+                x = .08 + u * .5; y = Math.round((R() * 2 - 1) * 26) / 26 * h; z = u * .25; c = R() < .6 ? '#dde3f1' : '#a3b2d8';
+            } else {
+                var ray = RAYS[(R() * RAYS.length) | 0], t = Math.pow(R(), .8);
+                x = .14 + t * .74 + (R() - .5) * .03; y = ray[0] + (ray[1] - ray[0]) * t + (R() - .5) * .03 * (1 + t); z = t * .2; c = R() < .05 ? '#ecd9a6' : '#a9aec0';
+            }
+            out.push({ x: s * x, y: y, z: z + (R() - .5) * .02, c: c });
+        }
+        return out;
+    }
     function dust(n) {
         var out = [];
         for (var i = 0; i < n; i++) out.push({ x: (Math.random() - .5) * 3.2, y: (Math.random() - .5) * 2, z: (Math.random() - .5) * 1.5 });
         return out;
     }
-    var FLAGS = { mark: { sway: 1 }, ring: { sway: 1 }, image: { sway: .4 }, sphere: { spin: 1 }, bars: { swing: 1, yaw: -.42, tilt: .3 }, helix: { spin: 1 }, plane: { spin: 1, wave: 1 }, dust: { drift: 1 } };
-    var MAKE = { mark: sampleMark, sphere: sphere, plane: plane, ring: ring, bars: bars, helix: helix, dust: dust, image: sampleMark };
+    var FLAGS = { mark: { sway: 1 }, ring: { sway: 1 }, gate: { sway: .7 }, image: { sway: .4 }, sphere: { spin: 1 }, bars: { swing: 1, yaw: -.42, tilt: .3 }, helix: { spin: 1 }, plane: { spin: 1, wave: 1 }, dust: { drift: 1 } };
+    var MAKE = { mark: sampleMark, sphere: sphere, plane: plane, ring: ring, bars: bars, helix: helix, gate: gate, dust: dust, image: sampleMark };
 
     // a cover image re-drawn in particles: keep pixels that stand out from the background
     function sampleImage(src, n, done) {

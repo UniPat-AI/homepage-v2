@@ -13,6 +13,7 @@ class ReleaseBundleTests(unittest.TestCase):
         for name in (".env", "../app.py", "/app.py", "static/../secrets", "static/.env", "content/blog_previews/fellows-v3.md", "templates/designs/v8.html", ".git/config"):
             self.assertFalse(allowed(name), name)
         self.assertTrue(allowed("static/sciencevision/viewer/shared/vendor/build/three.js"))
+        self.assertTrue(allowed("content/ots/catalog.json"))
 
     def fixture(self, path):
         for name in ROOT_FILES | {"deploy/validate.py", "static/site/site.css"}:

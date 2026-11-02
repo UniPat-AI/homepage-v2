@@ -58,6 +58,7 @@
         <nav class="nav" aria-label="Main">
             <a href="{{ url_for('blog_list') }}"{% if section.startswith('blog') %} aria-current="page"{% endif %}>Blog</a>
             <a href="{{ url_for('benchmarks_list') }}"{% if section.startswith('benchmarks') %} aria-current="page"{% endif %}>Benchmarks</a>
+            <a href="{{ url_for('ots') }}"{% if section == 'ots' %} aria-current="page"{% endif %}><span class="nav-long">Training &amp; Validation OTS</span><span class="nav-short">OTS</span></a>
             <a href="{{ url_for('joinus') }}"{% if section == 'joinus' %} aria-current="page"{% endif %}>Join us</a>
             <a class="x" href="https://x.com/UniPat_AI" target="_blank" rel="noopener noreferrer" aria-label="UniPat AI on X">{{ brand.x_icon() }}</a>
         </nav>
@@ -77,6 +78,7 @@
         <nav aria-label="Footer">
             <a href="{{ url_for('blog_list') }}">Blog</a>
             <a href="{{ url_for('benchmarks_list') }}">Benchmarks</a>
+            <a href="{{ url_for('ots') }}">Training &amp; Validation OTS</a>
             <a href="{{ url_for('joinus') }}">Join us</a>
             <a href="mailto:contact@unipat.ai">contact@unipat.ai</a>
             <a class="x" href="https://x.com/UniPat_AI" target="_blank" rel="noopener noreferrer">{{ brand.x_icon() }} @UniPat_AI</a>

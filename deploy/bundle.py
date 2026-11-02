@@ -8,7 +8,7 @@ import re
 import tarfile
 
 ROOT_FILES = {"app.py", "wsgi.py", "requirements.txt", "requirements-production.txt", "requirements.lock"}
-PREFIXES = ("templates/", "content/blog/", "content/benchmarks/", "static/")
+PREFIXES = ("templates/", "content/blog/", "content/benchmarks/", "content/ots/", "static/")
 EXCLUDED = ("templates/designs/", "static/designs/", "static/studio/", "static/visions/")
 
 

@@ -8,7 +8,7 @@ from typing import List, Dict, Any
 import json
 
 from flask import Flask, render_template, abort, url_for, jsonify, request, Response, redirect, send_from_directory
-from markupsafe import Markup
+from markupsafe import Markup, escape
 import markdown
 
 
@@ -17,6 +17,8 @@ BLOG_DIR = BASE_DIR / "content" / "blog"
 BENCHMARKS_DIR = BASE_DIR / "content" / "benchmarks"
 # 待定稿的 Blog 候选版本：只能通过 /blog/preview/<slug> 访问，不进列表和 sitemap
 BLOG_PREVIEW_DIR = BASE_DIR / "content" / "blog_previews"
+# Training & Validation OTS 页面数据：新的训练结果只需改这个文件
+OTS_CATALOG = BASE_DIR / "content" / "ots" / "catalog.json"
 
 # CDN URL 配置 (仅生产环境设置，staging 留空使用 OSS 直连)
 CDN_URL = os.environ.get("CDN_URL", "").rstrip("/")
@@ -166,6 +168,24 @@ def joinus():
     return render_template("joinus.html", teams=_role_teams())
 
 
+def _load_ots() -> Dict[str, Any]:
+    """Read the OTS catalog on each request so data updates need no restart."""
+    data = json.loads(OTS_CATALOG.read_text(encoding="utf-8"))
+    note = data["footer_note"]
+    link = Markup('<a href="{}">{}</a>').format(note["email_href"], note["email"])
+    # 说明文字里的邮箱地址渲染成 mailto 链接，其余文字照常转义
+    note["html"] = [link.join(escape(part) for part in p.split(note["email"])) for p in note["paragraphs"]]
+    for card in data["cards"]:
+        # "+13.05pp" -> "13.05"：页面上只让数字部分滚动
+        card["delta_value"] = card["delta_display"].lstrip("+").removesuffix("pp")
+    return data
+
+
+@app.route("/ots")
+def ots():
+    return render_template("ots.html", ots=_load_ots())
+
+
 @app.route("/blog")
 def blog_list():
     posts = _load_entries(BLOG_DIR)
@@ -307,6 +327,7 @@ def sitemap_xml():
         {"loc": f"{base}/",            "priority": "1.0", "changefreq": "weekly",  "lastmod": today},
         {"loc": f"{base}/blog",         "priority": "0.8", "changefreq": "weekly",  "lastmod": today},
         {"loc": f"{base}/benchmarks",   "priority": "0.8", "changefreq": "weekly",  "lastmod": today},
+        {"loc": f"{base}/ots",          "priority": "0.8", "changefreq": "monthly", "lastmod": today},
         {"loc": f"{base}/joinus",       "priority": "0.6", "changefreq": "monthly", "lastmod": today},
     ]
 

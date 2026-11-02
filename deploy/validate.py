@@ -25,7 +25,7 @@ def validate():
         assert response.status_code == status, (path, response.status_code)
         return response
 
-    paths = ["/", "/blog", "/benchmarks", "/joinus"]
+    paths = ["/", "/blog", "/benchmarks", "/ots", "/joinus"]
     for area in ("blog", "benchmarks"):
         paths.extend("/" + area + "/" + p.stem for p in (ROOT / "content" / area).glob("*.md"))
     for path in paths:
