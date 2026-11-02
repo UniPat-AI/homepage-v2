@@ -1,0 +1,54 @@
+{% macro optic(id) -%}
+<div class="ots-optic" data-ots-optic aria-hidden="true">
+    <svg viewBox="0 0 720 520" fill="none" focusable="false" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+            <linearGradient id="{{ id }}-glass" x1="0" y1="0.5" x2="1" y2="0.5" gradientUnits="objectBoundingBox">
+                <stop stop-color="#090c18" stop-opacity=".96"/>
+                <stop offset=".3" stop-color="#172148" stop-opacity=".84"/>
+                <stop offset=".64" stop-color="#343478" stop-opacity=".76"/>
+                <stop offset="1" stop-color="#9559c9" stop-opacity=".58"/>
+            </linearGradient>
+            <linearGradient id="{{ id }}-rim" x1="0" y1="0" x2="1" y2="1" gradientUnits="objectBoundingBox">
+                <stop stop-color="#a3b2d8" stop-opacity=".16"/>
+                <stop offset=".36" stop-color="#7164c7" stop-opacity=".6"/>
+                <stop offset=".65" stop-color="#c48be9" stop-opacity=".7"/>
+                <stop offset="1" stop-color="#7478c7" stop-opacity=".16"/>
+            </linearGradient>
+            <radialGradient id="{{ id }}-light">
+                <stop stop-color="#cd83ec" stop-opacity=".8"/>
+                <stop offset=".42" stop-color="#9453d5" stop-opacity=".55"/>
+                <stop offset="1" stop-color="#604bc2" stop-opacity="0"/>
+            </radialGradient>
+            <linearGradient id="{{ id }}-edge" x1="0" y1="0" x2="0" y2="1">
+                <stop stop-color="#a88de8" stop-opacity="0"/>
+                <stop offset=".5" stop-color="#cba4f0" stop-opacity=".7"/>
+                <stop offset="1" stop-color="#a88de8" stop-opacity="0"/>
+            </linearGradient>
+            <filter id="{{ id }}-soft" x="-50%" y="-50%" width="200%" height="200%">
+                <feGaussianBlur stdDeviation="12"/>
+            </filter>
+            <path id="{{ id }}-outer" d="M66 105Q66 92 78 98L240 177V343L78 424Q66 430 66 417Z"/>
+            <path id="{{ id }}-middle" d="M201 101Q201 89 210 97L301 179V341L210 426Q201 434 201 420Z"/>
+            <path id="{{ id }}-inner" d="M293 102Q293 91 300 102L344 184V337L300 419Q293 432 293 418Z"/>
+            {% for shape in ['outer', 'middle', 'inner'] %}
+            <clipPath id="{{ id }}-clip-{{ shape }}"><use href="#{{ id }}-{{ shape }}"/></clipPath>
+            {% endfor %}
+        </defs>
+        {% for side in ['left', 'right'] %}
+        <g{% if side == 'right' %} transform="translate(720 0) scale(-1 1)"{% endif %}>
+            {% for shape, light_x in [('outer', 229), ('middle', 286), ('inner', 338)] %}
+            <g class="ots-optic-sheet ots-optic-{{ shape }}" style="--phase: {{ loop.index0 * -1.4 }}s">
+                <use href="#{{ id }}-{{ shape }}" fill="url(#{{ id }}-glass)"/>
+                <g clip-path="url(#{{ id }}-clip-{{ shape }})">
+                    <ellipse class="ots-optic-light" cx="{{ light_x }}" cy="260" rx="63" ry="132" fill="url(#{{ id }}-light)" filter="url(#{{ id }}-soft)"/>
+                    <path d="M{{ light_x - 6 }} 125V395" stroke="url(#{{ id }}-edge)" stroke-width="1"/>
+                </g>
+                <use href="#{{ id }}-{{ shape }}" stroke="url(#{{ id }}-rim)" stroke-width="1.25"/>
+            </g>
+            {% endfor %}
+        </g>
+        {% endfor %}
+        <path class="ots-optic-spine" d="M358 95Q363 118 365 185V335Q363 400 358 427Z" fill="#17172c" stroke="url(#{{ id }}-rim)" stroke-width=".8"/>
+    </svg>
+</div>
+{%- endmacro %}
