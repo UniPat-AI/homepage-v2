@@ -1,0 +1,22 @@
+[Unit]
+Description=UniPat private preview deployment tunnel
+Wants=network-online.target
+After=network-online.target
+StartLimitIntervalSec=0
+[Service]
+Type=simple
+User=unipat-tunnel
+Group=unipat-tunnel
+ExecStart=/usr/bin/ssh -NT -i /etc/unipat-preview-tunnel/id_ed25519 -o UserKnownHostsFile=/etc/unipat-preview-tunnel/known_hosts -o StrictHostKeyChecking=yes -o IdentitiesOnly=yes -o BatchMode=yes -o ExitOnForwardFailure=yes -o ConnectTimeout=20 -o ServerAliveInterval=15 -o ServerAliveCountMax=3 -R 127.0.0.1:22022:127.0.0.1:22 unipat-ci-tunnel@43.106.60.226
+Restart=always
+RestartSec=10
+NoNewPrivileges=yes
+PrivateTmp=yes
+ProtectSystem=strict
+ProtectHome=yes
+RestrictAddressFamilies=AF_INET AF_INET6 AF_UNIX
+IPAddressDeny=any
+IPAddressAllow=127.0.0.0/8
+IPAddressAllow=43.106.60.226/32
+[Install]
+WantedBy=multi-user.target

@@ -75,15 +75,33 @@ jobs:
           KNOWN_HOSTS: ${{ secrets.PREVIEW_KNOWN_HOSTS }}
           PREVIEW_HOST: ${{ vars.PREVIEW_HOST }}
           PREVIEW_USER: ${{ vars.PREVIEW_USER }}
+          RELAY_HOST: ${{ vars.PREVIEW_RELAY_HOST }}
+          RELAY_USER: ${{ vars.PREVIEW_RELAY_USER }}
+          RELAY_KEY: ${{ secrets.PREVIEW_RELAY_SSH_KEY }}
+          RELAY_KNOWN_HOSTS: ${{ secrets.PREVIEW_RELAY_KNOWN_HOSTS }}
         run: |
           set -euo pipefail
           umask 077
           mkdir -p "$HOME/.ssh"
           printf '%s\n' "$SSH_KEY" > "$HOME/.ssh/preview_key"
           printf '%s\n' "$KNOWN_HOSTS" > "$HOME/.ssh/preview_known_hosts"
+          printf '%s\n' "$RELAY_KEY" > "$HOME/.ssh/preview_relay_key"
+          printf '%s\n' "$RELAY_KNOWN_HOSTS" > "$HOME/.ssh/preview_relay_known_hosts"
           cat > "$HOME/.ssh/config" <<EOF
+          Host unipat-preview-relay
+            HostName $RELAY_HOST
+            User $RELAY_USER
+            IdentityFile ~/.ssh/preview_relay_key
+            UserKnownHostsFile ~/.ssh/preview_relay_known_hosts
+            IdentitiesOnly yes
+            StrictHostKeyChecking yes
+            BatchMode yes
+            ConnectTimeout 15
           Host unipat-preview
-            HostName $PREVIEW_HOST
+            HostName 127.0.0.1
+            Port 22022
+            HostKeyAlias $PREVIEW_HOST
+            ProxyJump unipat-preview-relay
             User $PREVIEW_USER
             IdentityFile ~/.ssh/preview_key
             UserKnownHostsFile ~/.ssh/preview_known_hosts
@@ -106,9 +124,9 @@ jobs:
           python deploy/bundle.py --source preview-source --commit "$SOURCE_SHA" --output "$RUNNER_TEMP/$archive"
           scp "$RUNNER_TEMP/$archive" "unipat-preview:/opt/unipat-previews/incoming/$archive"
           python -c 'import json,os; print(json.dumps(dict(action="deploy",branch=os.environ["BRANCH_TOKEN"],commit=os.environ["SOURCE_SHA"],run_id=os.environ["SOURCE_RUN_ID"],attempt=os.environ["SOURCE_ATTEMPT"])))' | ssh unipat-preview preview
-          curl --fail --silent --show-error --retry 5 --retry-delay 2 "$PREVIEW_URL/_health" > "$RUNNER_TEMP/preview-health.json"
+          python -c 'import json,os; print(json.dumps(dict(action="health",branch=os.environ["BRANCH_TOKEN"],commit=os.environ["SOURCE_SHA"],run_id=os.environ["SOURCE_RUN_ID"],attempt=os.environ["SOURCE_ATTEMPT"])))' | ssh unipat-preview preview > "$RUNNER_TEMP/preview-health.json"
           python -c 'import json, os; assert json.load(open(os.environ["RUNNER_TEMP"] + "/preview-health.json"))["release"] == os.environ["SOURCE_SHA"]'
-          printf '### Branch preview\n- Preview: %s\n- Commit: `%s`\n' "$PREVIEW_URL" "$SOURCE_SHA" >> "$GITHUB_STEP_SUMMARY"
+          printf '### Branch preview\n- Preview: %s\n- Commit: `%s`\n- 访问方式：请先连接飞连，公司内网可访问。\n' "$PREVIEW_URL" "$SOURCE_SHA" >> "$GITHUB_STEP_SUMMARY"
       - name: Remove deleted branch preview
         if: github.event_name == 'delete'
         env:
@@ -118,4 +136,4 @@ jobs:
           python -c 'import json,os; print(json.dumps(dict(action="remove",branch=os.environ["BRANCH_TOKEN"],run_id=os.environ["GITHUB_RUN_ID"],attempt=os.environ["GITHUB_RUN_ATTEMPT"])))' | ssh unipat-preview preview
       - name: Remove local credentials
         if: always()
-        run: rm -f "$HOME/.ssh/preview_key" "$HOME/.ssh/preview_known_hosts"
+        run: rm -f "$HOME/.ssh/preview_key" "$HOME/.ssh/preview_known_hosts" "$HOME/.ssh/preview_relay_key" "$HOME/.ssh/preview_relay_known_hosts" "$HOME/.ssh/config"

@@ -88,8 +88,10 @@ def prune_orphan_containers(states):
 def check_health(host, commit):
     request = urllib.request.Request('http://127.0.0.1/_health', headers={'Host': host})
     with urllib.request.urlopen(request, timeout=8) as response:
-        if json.load(response).get('release') != commit:
+        health = json.load(response)
+        if health.get('release') != commit:
             raise RuntimeError('Preview health commit mismatch')
+        return health
 
 
 def stage_archive(archive, target, commit, upload_uid):
@@ -115,16 +117,16 @@ def parse_request(raw):
     if len(raw) > 2048:
         raise ValueError('Request too large')
     request = json.loads(raw)
-    if not isinstance(request, dict) or request.get('action') not in ('deploy', 'remove'):
+    if not isinstance(request, dict) or request.get('action') not in ('deploy', 'remove', 'health'):
         raise ValueError('Invalid operation')
     keys = {'action', 'branch', 'run_id', 'attempt'}
-    if request['action'] == 'deploy':
+    if request['action'] in ('deploy', 'health'):
         keys.add('commit')
     if set(request) != keys or any(not isinstance(v, str) for v in request.values()):
         raise ValueError('Invalid request fields')
     decode_branch(request['branch'])
     generation(request['run_id'], request['attempt'])
-    if request.get('commit') and not re.fullmatch('[0-9a-f]{40}', request['commit']):
+    if 'commit' in request and not re.fullmatch('[0-9a-f]{40}', request['commit']):
         raise ValueError('Invalid commit')
     return request
 
@@ -134,7 +136,7 @@ def main():
         raise SystemExit('The installed entrypoint accepts only a bounded JSON request on stdin')
     request = parse_request(sys.stdin.buffer.read(2049))
     action, token = request['action'], request['branch']
-    if action not in ('deploy', 'remove'):
+    if action not in ('deploy', 'remove', 'health'):
         raise ValueError('Invalid operation')
     branch = decode_branch(token)
     if branch == 'main':
@@ -146,6 +148,11 @@ def main():
     commit = request.get('commit')
     if commit and not re.fullmatch('[0-9a-f]{40}', commit):
         raise ValueError('Invalid commit')
+    # A GitHub-hosted runner cannot HTTP-fetch an intranet preview. Probe the
+    # actual Nginx route locally through this authenticated, bounded API instead.
+    if action == 'health':
+        print(json.dumps(check_health(host, commit)))
+        return
     os.umask(0o022)
     with (BASE / 'deploy.lock').open('a') as lock:
         fcntl.flock(lock, fcntl.LOCK_EX)
