@@ -3,6 +3,8 @@
    centred on screen, plus where the shape sits:
      data-shape  mark | sphere | plane | ring | bars | helix | gate | dust | image
      data-src    image URL when data-shape="image" (falls back to the mark)
+     data-tint   optional particle colour for an image (otherwise sampled colours)
+     data-detail "fine" preserves small points in a point-cloud reference image
      data-fx/fy  centre as a fraction of the viewport (desktop; mobile is centred)
      data-fs     scale        data-fa  opacity
    Particle positions are handed to the next page through sessionStorage, so the
@@ -108,11 +110,11 @@
     var MAKE = { mark: sampleMark, sphere: sphere, plane: plane, ring: ring, bars: bars, helix: helix, gate: gate, dust: dust, image: sampleMark };
 
     // a cover image re-drawn in particles: keep pixels that stand out from the background
-    function sampleImage(src, n, done) {
+    function sampleImage(src, n, done, tint, detail) {
         var img = new Image(); img.crossOrigin = 'anonymous'; img.decoding = 'async';
         img.onload = function () {
             try {
-                var S = 180, ar = img.naturalWidth / img.naturalHeight, w = ar >= 1 ? S : Math.round(S * ar), h = ar >= 1 ? Math.round(S / ar) : S;
+                var S = detail === 'fine' ? 480 : 180, ar = img.naturalWidth / img.naturalHeight, w = ar >= 1 ? S : Math.round(S * ar), h = ar >= 1 ? Math.round(S / ar) : S;
                 var off = document.createElement('canvas'); off.width = w; off.height = h;
                 var o = off.getContext('2d', { willReadFrequently: true }); o.drawImage(img, 0, 0, w, h);
                 var d = o.getImageData(0, 0, w, h).data;
@@ -129,7 +131,7 @@
                 }
                 if (pts.length < 400) return;
                 var out = [];
-                for (var i = 0; i < n; i++) { var q = pts[(Math.random() * pts.length) | 0]; out.push({ x: q.x * .95 + (Math.random() - .5) * .012, y: q.y * .95 + (Math.random() - .5) * .012, z: (Math.random() - .5) * .06, c: q.c }); }
+                for (var i = 0; i < n; i++) { var q = pts[(Math.random() * pts.length) | 0]; out.push({ x: q.x * .95 + (Math.random() - .5) * .012, y: q.y * .95 + (Math.random() - .5) * .012, z: (Math.random() - .5) * .06, c: tint || q.c }); }
                 done(out);
             } catch (e) { /* cross-origin image without CORS: keep the mark */ }
         };
@@ -139,7 +141,7 @@
     var sections = Array.prototype.slice.call(document.querySelectorAll('[data-scene]'));
     var scenes = sections.map(function (s) {
         var d = s.dataset;
-        return { shape: d.shape || 'mark', src: d.src, fx: +(d.fx || .7), fy: +(d.fy || .5), fs: +(d.fs || 1), fa: d.fa === undefined ? 1 : +d.fa };
+        return { shape: d.shape || 'mark', src: d.src, tint: d.tint, detail: d.detail, fx: +(d.fx || .7), fy: +(d.fy || .5), fs: +(d.fs || 1), fa: d.fa === undefined ? 1 : +d.fa };
     });
     if (!scenes.length) scenes = [{ shape: 'mark', fx: .5, fy: .5, fs: 1, fa: 1 }];
 
@@ -172,7 +174,7 @@
         T = scenes.map(function (sc) { return MAKE[sc.shape] ? MAKE[sc.shape](N) : sampleMark(N); });
         META = scenes.map(function (sc) { return FLAGS[sc.shape] || FLAGS.mark; });
         scenes.forEach(function (sc, idx) {
-            if (sc.shape === 'image' && sc.src) sampleImage(sc.src, N, function (pts) { if (pts.length !== N) return; T[idx] = pts; if (reduce) settle(); });
+            if (sc.shape === 'image' && sc.src) sampleImage(sc.src, N, function (pts) { if (pts.length !== N) return; T[idx] = pts; if (reduce) settle(); }, sc.tint, sc.detail);
         });
         restored = restore() || restored;
     }

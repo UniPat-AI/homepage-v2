@@ -7,7 +7,7 @@
 {% block body_class %}ots{% endblock %}
 
 {% block content %}
-<section class="phero ots-hero" data-scene data-shape="image" data-src="{{ static_cdn('images/ots/glass-layers.jpg') }}" data-fx=".76" data-fy=".46" data-fs="1.2">
+<section class="phero ots-hero" data-scene data-shape="image" data-src="{{ static_cdn('images/ots/segmented-ring.jpg') }}" data-tint="#dde3f1" data-detail="fine" data-fx=".76" data-fy=".46" data-fs="1">
     <div class="wrap ots-intro"><div class="col">
         <span class="mono">{{ hero.eyebrow }}</span>
         <h1 data-split>{% for line in hero.title_lines %}{{ line }}{% if not loop.last %}<br>{% endif %}{% endfor %}</h1>
