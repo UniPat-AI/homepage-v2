@@ -43,10 +43,10 @@
     </div>
 </section>
 
-<section class="ots-close" aria-labelledby="ots-more" data-scene data-shape="mark" data-fx=".76" data-fs=".75">
+<section class="ots-close" aria-labelledby="ots-more" data-scene data-shape="mark">
     <div class="wrap ots-outro"><div class="col" data-reveal>
         <h2 id="ots-more">{{ ots.footer_note.paragraphs[0] }}</h2>
         {% for p in ots.footer_note.html[1:] %}<p>{{ p }}</p>{% endfor %}
-    </div></div>
+    </div><div class="ots-close-visual" data-field-anchor aria-hidden="true"></div></div>
 </section>
 {% endblock %}

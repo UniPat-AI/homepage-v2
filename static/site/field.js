@@ -7,6 +7,8 @@
      data-detail "fine" preserves small points in a point-cloud reference image
      data-fx/fy  centre as a fraction of the viewport (desktop; mobile is centred)
      data-fs     scale        data-fa  opacity
+   A child [data-field-anchor] reserves a layout box for a scene's particles;
+   its centre and size replace viewport positioning for that scene only.
    Particle positions are handed to the next page through sessionStorage, so the
    field flows from one page's shape into the next instead of starting over. */
 (function () {
@@ -141,7 +143,7 @@
     var sections = Array.prototype.slice.call(document.querySelectorAll('[data-scene]'));
     var scenes = sections.map(function (s) {
         var d = s.dataset;
-        return { shape: d.shape || 'mark', src: d.src, tint: d.tint, detail: d.detail, fx: +(d.fx || .7), fy: +(d.fy || .5), fs: +(d.fs || 1), fa: d.fa === undefined ? 1 : +d.fa };
+        return { shape: d.shape || 'mark', src: d.src, tint: d.tint, detail: d.detail, anchor: s.querySelector('[data-field-anchor]'), fx: +(d.fx || .7), fy: +(d.fy || .5), fs: +(d.fs || 1), fa: d.fa === undefined ? 1 : +d.fa };
     });
     if (!scenes.length) scenes = [{ shape: 'mark', fx: .5, fy: .5, fs: 1, fa: 1 }];
 
@@ -190,6 +192,18 @@
     function ease(k) { return k < .5 ? 4 * k * k * k : 1 - Math.pow(-2 * k + 2, 3) / 2; }
     function mix(a, b, k) { return a + (b - a) * k; }
 
+    function placement(sc, mobile) {
+        if (sc.anchor) {
+            var r = sc.anchor.getBoundingClientRect();
+            return { x: r.left + r.width / 2, y: r.top + r.height / 2, scale: Math.min(r.width, r.height) * .42 * sc.fs };
+        }
+        return {
+            x: W * (mobile ? .5 : sc.fx),
+            y: H * Math.min(sc.fy, mobile ? .24 : 1),
+            scale: Math.min(mobile ? W * .32 : W * .24, H * (mobile ? .2 : .36)) * sc.fs
+        };
+    }
+
     var t0 = performance.now(), rotY = 0, tilt = { x: 0, y: 0 }, running = true;
     function frame(now) {
         if (running && !reduce) requestAnimationFrame(frame);
@@ -207,9 +221,10 @@
         ctx.globalCompositeOperation = 'lighter';
 
         var mobile = W < 900;
-        // on phones the copy sits at the bottom of each scene, so the shape moves into the space above it
-        var cx = mobile ? W * .5 : W * mix(A0.fx, B0.fx, k), cy = H * Math.min(mix(A0.fy, B0.fy, k), mobile ? .24 : 1);
-        var S = Math.min(mobile ? W * .32 : W * .24, H * (mobile ? .2 : .36)) * mix(A0.fs, B0.fs, k), alpha = mix(A0.fa, B0.fa, k);
+        // Layout-bound scenes follow their reserved space, including during a morph.
+        var pa = placement(A0, mobile), pb = a === b ? pa : placement(B0, mobile);
+        var cx = mix(pa.x, pb.x, k), cy = mix(pa.y, pb.y, k);
+        var S = mix(pa.scale, pb.scale, k), alpha = mix(A0.fa, B0.fa, k);
         rotY += reduce ? 0 : .0035;
         tilt.x += ((mouse.y > -1e3 ? (mouse.y / H - .5) : 0) * .5 - tilt.x) * .04;
         tilt.y += ((mouse.x > -1e3 ? (mouse.x / W - .5) : 0) * .7 - tilt.y) * .04;
@@ -234,6 +249,8 @@
             var dx = p.x - mouse.x, dy = p.y - mouse.y, d2 = dx * dx + dy * dy;
             if (d2 < 14400) { var f = (1 - Math.sqrt(d2) / 120) * 2.2; p.vx += dx * f * .04; p.vy += dy * f * .04; }
             p.vx *= .78; p.vy *= .78; p.x += p.vx; p.y += p.vy;
+            // Reduced-motion scrolling has no animation loop to catch up to the box.
+            if (reduce && (A0.anchor || B0.anchor)) { p.x = gx; p.y = gy; p.vx = p.vy = 0; }
 
             var depth = Math.max(.25, Math.min(1, persp - .35));
             ctx.globalAlpha = alpha * depth * (.55 + .45 * Math.sin(t * 2 + p.seed * 20));
