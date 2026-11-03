@@ -5,11 +5,11 @@ HeaderImage: /static/sciencevision/assets/sciencevision-cover.jpg
 Layout: sciencevision
 
 <link rel="stylesheet" href="/static/sciencevision/styles/tokens.css?v=bb3701f1">
-<link rel="stylesheet" href="/static/sciencevision/styles/article.css?v=1d36cf4b">
+<link rel="stylesheet" href="/static/sciencevision/styles/article.css?v=3d8a6787">
 <link rel="stylesheet" href="/static/sciencevision/styles/trajectory.css?v=b7672362">
-<link rel="stylesheet" href="/static/sciencevision/styles/components.css?v=a4a2c031">
-<link rel="stylesheet" href="/static/sciencevision/styles/viewer.css?v=1dceb7d6">
-<link rel="stylesheet" href="/static/sciencevision/styles/site.css?v=9363caf6">
+<link rel="stylesheet" href="/static/sciencevision/styles/components.css?v=23e5bceb">
+<link rel="stylesheet" href="/static/sciencevision/styles/viewer.css?v=62824a51">
+<link rel="stylesheet" href="/static/sciencevision/styles/site.css?v=3e20dbd1">
 
 <div class="sv-layout">
 
@@ -728,6 +728,6 @@ Yi Shen<sup>1</sup>, Wenda Wang<sup>2</sup></dd></div>
 <script defer src="/static/sciencevision/data/benchmark.js?v=e77dc041"></script>
 <script defer src="/static/sciencevision/js/vendor-logos.js?v=646de54c"></script>
 <script defer src="/static/sciencevision/js/trajectory.js?v=548d147e"></script>
-<script defer src="/static/sciencevision/js/benchmark.js?v=4ca9f249"></script>
+<script defer src="/static/sciencevision/js/benchmark.js?v=ceeaf43a"></script>
 <script defer src="/static/sciencevision/data/viewer-cases.js?v=215b28bd"></script>
 <script defer src="/static/sciencevision/js/viewer.js?v=6a03bc18"></script>

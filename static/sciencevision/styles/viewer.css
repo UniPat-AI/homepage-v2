@@ -131,6 +131,8 @@
 
 .sv-live__stage {
   position: relative;
+  /* An explicit width, or min-height would push the width up through the aspect ratio. */
+  width: 100%;
   aspect-ratio: 16 / 10;
   min-height: 340px;
   max-height: 620px;

@@ -199,18 +199,24 @@
   height: 268px;
 }
 
+/* The axis stops 1px short, matching the area's bottom border, so a tick's "bottom: x%"
+   resolves against the same height as its gridline's. */
 .sv-plot__axis {
   position: relative;
+  margin-bottom: 1px;
   font-family: var(--sv-serif);
   font-size: 10px;
   color: var(--sv-muted);
   font-variant-numeric: tabular-nums;
 }
 
+/* "bottom" sets the label's lower edge on the tick; moving it down half its height centres
+   it on the gridline, whose 1px stroke takes the other half pixel. */
 .sv-plot__axis span {
   position: absolute;
   right: 0;
-  transform: translateY(-50%);
+  line-height: 1;
+  transform: translateY(calc(50% - .5px));
 }
 
 .sv-plot__area {
@@ -225,7 +231,7 @@
 .sv-gridline {
   position: absolute;
   z-index: 0;
-  left: 34px;
+  left: 0;
   right: 0;
   height: 1px;
   background-image: repeating-linear-gradient(
@@ -446,15 +452,15 @@
 
 /* ---------- related-work comparison ---------- */
 
+.sv-compare-figure { margin: 24px 0 4px; }
+
 .sv-compare {
   width: 100%;
-  margin: 24px 0 4px;
   border-collapse: collapse;
   font-size: 12px;
 }
 
-.sv-compare caption {
-  caption-side: bottom;
+.sv-compare__caption {
   padding-top: 14px;
   font-size: 11px;
   line-height: 1.6;
@@ -720,6 +726,28 @@
     rgba(255, 255, 255, .8) 0 2px, transparent 2px 5px);
 }
 
+/* ---------- horizontal scroll boxes ---------- */
+
+/* Wide tables scroll inside their own box rather than widening the page. The soft edge
+   shadows appear only while there is more to scroll that way: the --sv-scroll-bg covers
+   travel with the content and hide them at either end. */
+.sv-scroll {
+  --sv-scroll-bg: var(--sv-ground);
+  /* Positioned, so the visually hidden labels in the cells are clipped here too; otherwise
+     their containing block is the page and they widen it from inside the scroll box. */
+  position: relative;
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  -webkit-overflow-scrolling: touch;
+  background:
+    linear-gradient(to right, var(--sv-scroll-bg) 40%, transparent) left / 32px 100% no-repeat local,
+    linear-gradient(to left, var(--sv-scroll-bg) 40%, transparent) right / 32px 100% no-repeat local,
+    radial-gradient(farthest-side at 0 50%, rgba(36, 59, 50, .16), transparent) left / 10px 100% no-repeat scroll,
+    radial-gradient(farthest-side at 100% 50%, rgba(36, 59, 50, .16), transparent) right / 10px 100% no-repeat scroll;
+}
+
+.sv-chart .sv-scroll { --sv-scroll-bg: var(--sv-ground-warm); }
+
 /* ---------- per-domain matrix ---------- */
 
 .sv-lb__matrix .sv-matrix { margin-top: 4px; }
@@ -837,6 +865,7 @@
   }
 
   .sv-lb__chart .sv-chart__foot { margin-top: 138px; }
+  .sv-lb__chart.sv-lb__matrix .sv-chart__foot { margin-top: 14px; }
 }
 
 @media (max-width: 1080px) {
@@ -849,6 +878,38 @@
 }
 
 @media (max-width: 720px) {
+  /* Wide tables keep their columns legible and scroll sideways; the first column stays
+     pinned so each row keeps its name. */
+  .sv-compare { min-width: 560px; }
+
+  .sv-compare th:first-child {
+    position: sticky;
+    left: 0;
+    z-index: 1;
+    padding-left: 0;
+    background: var(--sv-ground);
+    box-shadow: inset -1px 0 0 var(--sv-rule);
+  }
+
+  .sv-compare tr.is-ours th:first-child { background: var(--sv-ground-cool); padding-left: 8px; }
+
+  .sv-matrix__grid { min-width: 600px; }
+
+  .sv-matrix__head,
+  .sv-matrix__row { grid-template-columns: 118px repeat(5, minmax(0, 1fr)); gap: 10px; }
+
+  .sv-matrix__head > span:first-child,
+  .sv-matrix__name {
+    position: sticky;
+    left: 0;
+    z-index: 1;
+    align-self: stretch;
+    background: var(--sv-ground-warm);
+    box-shadow: inset -1px 0 0 var(--sv-rule);
+  }
+
+  .sv-matrix__head > span:first-child { display: flex; align-items: flex-end; }
+
   .sv-steps { grid-template-columns: minmax(0, 1fr); }
   .sv-step { border-top: 1px solid var(--sv-rule); }
   .sv-step:first-child { border-top: 0; }

@@ -335,5 +335,10 @@ html { scroll-behavior: smooth; }
   .sv-stats { grid-template-columns: repeat(2, minmax(0, 1fr)); row-gap: 18px; }
   .sv-stat:nth-child(3) { border-left: 0; padding-left: 0; }
   .sv-hero { padding-top: 34px; }
-  .sv-hero__lede, .sv-section p { font-size: 16px; }
+  /* Prose paragraphs only: labels and notes are <p> with a class and keep their own size. */
+  .sv-hero__lede, .sv-section p:where(:not([class])) { font-size: 16px; }
+  /* Three buttons do not fit one phone row: the primary takes its own, the two others split
+     the next, rather than leaving one stranded. */
+  .sv-hero__actions { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .sv-hero__actions .sv-action--primary { grid-column: 1 / -1; }
 }

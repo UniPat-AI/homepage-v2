@@ -39,3 +39,10 @@
     width: min(var(--sv-measure), 94vw);
   }
 }
+
+/* Phones: a 20px gutter instead of 3vw, and nothing in the article may widen the page;
+   wide tables and charts scroll inside their own boxes. */
+@media (max-width: 720px) {
+  .markdown:has(.sv-layout) { width: calc(100vw - 40px); }
+  .markdown:has(.sv-layout) .sv-layout { width: 100%; }
+}

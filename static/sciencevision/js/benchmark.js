@@ -43,6 +43,13 @@
     return words.charAt(0).toUpperCase() + words.slice(1);
   }
 
+  // Touch screens have no hover; a tap fires the same mouseover, so only the wording changes.
+  var POINTING = window.matchMedia && matchMedia("(hover: none)").matches ? "tap" : "hover";
+
+  function hint(target) {
+    return POINTING + " a " + target + " for the reported value";
+  }
+
   function el(tag, className, text) {
     var node = document.createElement(tag);
     if (className) node.className = className;
@@ -186,7 +193,7 @@
       legend.appendChild(item);
     });
     foot.appendChild(legend);
-    var readout = el("p", "sv-chart__readout", "hover a bar for the reported value");
+    var readout = el("p", "sv-chart__readout", hint("bar"));
     readout.setAttribute("data-readout", "");
     foot.appendChild(readout);
     explorer.appendChild(foot);
@@ -206,7 +213,7 @@
       Array.prototype.forEach.call(area.querySelectorAll(".sv-bar"), function (other) {
         other.classList.remove("is-on");
       });
-      readout.textContent = "hover a bar for the reported value";
+      readout.textContent = hint("bar");
     });
   }
 
@@ -258,9 +265,15 @@
     });
     table.appendChild(body);
 
-    table.appendChild(el("caption", null,
+    // The table scrolls inside its own box on narrow screens; the caption stays outside it
+    // so it wraps to the column instead of travelling with the table.
+    var figure = el("figure", "sv-compare-figure");
+    var scroller = el("div", "sv-scroll");
+    scroller.appendChild(table);
+    figure.appendChild(scroller);
+    figure.appendChild(el("figcaption", "sv-compare__caption",
       "Comparison of benchmark objectives and settings reported in the cited papers."));
-    host.appendChild(table);
+    host.appendChild(figure);
   }
 
   /* ---------- sub-domain coverage ---------- */
@@ -345,7 +358,7 @@
       Array.prototype.forEach.call(area.querySelectorAll(hot), function (other) {
         other.classList.remove("is-on");
       });
-      readout.textContent = "hover a bar for the reported value";
+      readout.textContent = hint("bar");
     });
   }
 
@@ -447,7 +460,7 @@
       });
     }
     foot.appendChild(legend);
-    var readout = el("p", "sv-chart__readout", "hover a bar for the reported value");
+    var readout = el("p", "sv-chart__readout", hint("bar"));
     foot.appendChild(readout);
     chart.appendChild(foot);
 
@@ -484,6 +497,12 @@
     head.appendChild(titles);
     chart.appendChild(head);
 
+    // Five columns cannot share a phone's width, so the grid scrolls in its own box with
+    // the model names pinned.
+    var matrix = el("div", "sv-matrix sv-scroll");
+    var grid = el("div", "sv-matrix__grid");
+    matrix.appendChild(grid);
+
     var headRow = el("div", "sv-matrix__head");
     headRow.appendChild(el("span", null, "Model"));
     domains.forEach(function (domain, index) {
@@ -491,7 +510,7 @@
       cell.appendChild(el("em", null, "max " + maxima[index].toFixed(3)));
       headRow.appendChild(cell);
     });
-    chart.appendChild(headRow);
+    grid.appendChild(headRow);
 
     rows.forEach(function (model) {
       var row = el("div", "sv-matrix__row");
@@ -520,12 +539,13 @@
         cell.appendChild(el("span", "sv-matrix__val", value.toFixed(3)));
         row.appendChild(cell);
       });
-      chart.appendChild(row);
+      grid.appendChild(row);
     });
+    chart.appendChild(matrix);
 
     var foot = el("div", "sv-chart__foot");
     foot.appendChild(el("div", "sv-chart__legend"));
-    var readout = el("p", "sv-chart__readout", "hover a cell for the reported value");
+    var readout = el("p", "sv-chart__readout", hint("cell"));
     foot.appendChild(readout);
     chart.appendChild(foot);
     lbReadout(chart, readout);
