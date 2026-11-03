@@ -2,7 +2,7 @@ Title: BabyVision
 Date: 2026-01-12
 Rank: 🏆 Qwen3.8-Max: 91.3%
 Domain: Visual Reasoning
-Summary: A benchmark for visual reasoning that challanges frontier MLLMs yet 3-year-olds can solve.
+Summary: A benchmark for visual reasoning that challenges frontier MLLMs yet 3-year-olds can solve.
 HeaderImage: /static/images/babyvision/baby_logo2.png
 
 <style>
