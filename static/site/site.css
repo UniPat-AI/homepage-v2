@@ -255,39 +255,20 @@ body:not(.is-reading) .markdown :is(.bv-toc, .ex-toc, .ec-toc, .tb-toc, .sb-toc,
 
 /* ---- training & validation OTS ---- */
 .ots-hero { min-height: 82svh; padding: 140px 0 90px; }
-.ots-intro, .ots-outro { display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr); gap: 24px; align-items: center; }
-.ots-hero .col, .ots-close .col { width: 100%; }
+.ots-hero .col, .ots-close .col { width: min(700px, 53%); }
 .ots-hero h1 { font-size: clamp(42px, 4.5vw, 72px); line-height: 1.04; letter-spacing: -.04em; }
 .ots-hero p { max-width: 540px; }
-.ots-optic { width: 100%; min-width: 0; pointer-events: none; }
-.ots-optic svg { display: block; width: 100%; height: auto; overflow: visible; }
-.ots-optic-sheet { animation: ots-unfold 9s ease-in-out infinite; animation-delay: var(--phase); animation-play-state: paused; }
-.ots-optic-outer { opacity: .82; }
-.ots-optic-inner { opacity: .88; }
-.ots-optic-light { transform-box: fill-box; transform-origin: center; animation: ots-light 7s ease-in-out infinite; animation-delay: var(--phase); animation-play-state: paused; }
-.ots-optic.is-moving .ots-optic-sheet, .ots-optic.is-moving .ots-optic-light { animation-play-state: running; }
-@keyframes ots-unfold { 0%, 100% { transform: translateX(-5px); } 50% { transform: translateX(5px); } }
-@keyframes ots-light { 0%, 100% { opacity: .55; transform: translateY(-10px) scaleY(.92); } 50% { opacity: 1; transform: translateY(10px) scaleY(1.05); } }
 .btn .arr, .ots-cta .arr { display: inline-block; transition: transform .4s var(--ease); }
 .btn:hover .arr, .ots-cta:hover .arr, .ots-cta:focus-visible .arr { transform: translateX(4px); }
 .ots-results { padding: 10px 0 80px; }
 .ots-grid { list-style: none; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px; }
-.ots-card { display: grid; grid-template-rows: 1fr auto auto auto; min-width: 0; padding: 36px 40px 32px; border-radius: 20px; border: 1px solid var(--line); background: #0e1017; transition: opacity .9s ease calc(var(--si, 0) * 80ms), transform 1s var(--ease) calc(var(--si, 0) * 80ms), border-color .35s, background .35s; scroll-margin-top: 100px; }
+.ots-card { display: grid; grid-template-rows: 1fr auto auto; min-width: 0; padding: 36px 40px 32px; border-radius: 20px; border: 1px solid var(--line); background: #0e1017; transition: opacity .9s ease calc(var(--si, 0) * 80ms), transform 1s var(--ease) calc(var(--si, 0) * 80ms), border-color .35s, background .35s; scroll-margin-top: 100px; }
 .ots-card:hover, .ots-card:focus-within { border-color: rgba(221, 227, 241, .2); background: #11131b; }
 .ots-card h3 { font-weight: 500; font-size: clamp(28px, 2.5vw, 36px); line-height: 1.18; letter-spacing: -.025em; overflow-wrap: anywhere; }
 .ots-model { display: flex; flex-wrap: wrap; align-items: baseline; gap: 2px 12px; color: var(--soft); font-size: 14px; margin-top: 12px; }
 .ots-metric { font-size: 12.5px; color: var(--muted); }
-/* Every card in a row shares the same header height and quiet dividing rule. */
-.ots-divider { height: 1px; margin: 28px 0 22px; background: rgba(221, 227, 241, .24); }
-/* The full track is 100%: grey is the baseline, lilac is the measured gain. */
-.ots-divider--comparison { position: relative; height: 2px; border-radius: 2px; background: rgba(221, 227, 241, .1); }
-.ots-divider--comparison i { position: absolute; top: 0; bottom: 0; }
-.ots-baseline { left: 0; width: calc(var(--before) - 1px); background: rgba(221, 227, 241, .46); border-radius: 2px 0 0 2px; }
-.ots-gain { left: var(--before); width: calc(var(--after) - var(--before)); background: linear-gradient(90deg, #a3b2d8, #c2b7ee); border-radius: 0 2px 2px 0; transform-origin: left; }
-.ots-card.is-in .ots-gain { animation: ots-gain-in .9s var(--ease) .25s backwards; }
-@keyframes ots-gain-in { from { transform: scaleX(0); } to { transform: scaleX(1); } }
-.ots-divider--comparison + .ots-scores .now { color: var(--lilac); }
-.ots-scores { display: flex; align-items: baseline; gap: 12px; font-size: 15px; font-variant-numeric: tabular-nums; }
+/* Whitespace separates the scores; equal header rows keep paired cards aligned. */
+.ots-scores { display: flex; align-items: baseline; gap: 12px; margin-top: 32px; font-size: 15px; font-variant-numeric: tabular-nums; }
 .ots-scores .was { color: var(--muted); }
 .ots-scores .to { color: var(--muted); }
 .ots-scores .now { color: var(--text); }
@@ -300,12 +281,11 @@ body:not(.is-reading) .markdown :is(.bv-toc, .ex-toc, .ec-toc, .tb-toc, .sb-toc,
 .ots-cta:hover, .ots-cta:focus-visible { color: var(--text); }
 .ots-cta:hover::after, .ots-cta:focus-visible::after { transform: scaleX(1); transform-origin: left; }
 .ots-close { padding: 32px 0 100px; }
-.ots-outro { min-height: 360px; border-top: 1px solid var(--line); padding-top: 52px; }
+.ots-outro { display: flex; align-items: center; min-height: 360px; border-top: 1px solid var(--line); padding-top: 52px; }
 .ots-close h2 { font-weight: 500; font-size: clamp(36px, 4vw, 56px); line-height: 1.1; letter-spacing: -.035em; margin-bottom: 22px; }
 .ots-close p { color: var(--soft); font-size: 18px; line-height: 1.75; max-width: 470px; text-wrap: pretty; }
 .ots-close p a { color: var(--mist); white-space: nowrap; text-decoration: underline; text-decoration-color: rgba(194, 183, 238, .5); text-underline-offset: 5px; transition: color .25s, text-decoration-color .25s; }
 .ots-close p a:hover { color: var(--lilac); text-decoration-color: currentColor; }
-.ots-close .ots-optic { max-width: 430px; justify-self: end; opacity: .75; }
 
 /* ---- 404 ---- */
 .lost { min-height: 100vh; min-height: 100svh; display: flex; align-items: center; justify-content: center; text-align: center; padding: 120px 0; }
@@ -358,13 +338,11 @@ body:not(.is-reading) .markdown :is(.bv-toc, .ex-toc, .ec-toc, .tb-toc, .sb-toc,
     .team > .mono { padding-top: 0; }
     .markdown { max-width: 100%; }
     .paper { border-radius: 22px 22px 0 0; padding-top: 44px; }
-    .ots-hero { min-height: 0; padding: 120px 0 60px; }
-    .ots-intro { grid-template-columns: 1fr; gap: 14px; }
-    .ots-hero .col { max-width: 660px; }
+    .ots-hero { min-height: 92svh; padding: max(300px, 38svh) 0 60px; }
+    .ots-hero .col, .ots-close .col { width: 100%; max-width: 660px; }
     .ots-hero h1 { font-size: clamp(40px, 7vw, 64px); }
-    .ots-hero .ots-optic { width: min(540px, 85%); justify-self: center; }
     .ots-grid { grid-template-columns: 1fr; gap: 16px; }
-    .ots-outro { grid-template-columns: 1.2fr 1fr; gap: 16px; min-height: 300px; }
+    .ots-outro { min-height: 62svh; align-items: flex-end; padding-top: max(240px, 34svh); }
     .ots-close { padding-bottom: 64px; }
 }
 @media (max-width: 680px) {
@@ -383,19 +361,16 @@ body:not(.is-reading) .markdown :is(.bv-toc, .ex-toc, .ec-toc, .tb-toc, .sb-toc,
     .p { grid-template-columns: 96px minmax(0, 1fr); }
     .phero .count { gap: 20px; }
     .jrole { flex-wrap: wrap; gap: 4px; }
-    .ots-hero { padding-top: 112px; padding-bottom: 36px; }
+    .ots-hero { padding-bottom: 44px; }
     .ots-hero h1 { font-size: clamp(34px, 8.3vw, 48px); }
     .ots-hero p { font-size: 16px; }
-    .ots-hero .ots-optic { width: min(460px, 100%); margin-top: 12px; }
     .ots-results { padding-bottom: 44px; }
     .ots-card { padding: 28px 24px 24px; border-radius: 18px; }
     .ots-card h3 { font-size: 28px; }
-    .ots-divider { margin: 24px 0 20px; }
+    .ots-scores { margin-top: 28px; }
     .ots-lift { font-size: 26px; }
-    .ots-outro { grid-template-columns: 1fr; padding-top: 44px; gap: 24px; }
     .ots-close h2 { font-size: 40px; }
     .ots-close p { font-size: 17px; }
-    .ots-close .ots-optic { width: min(340px, 90%); justify-self: center; }
     .ots-close { padding-bottom: 32px; }
 }
 @media (max-width: 480px) {

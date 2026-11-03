@@ -50,7 +50,7 @@
 </head>
 <body class="{% block body_class %}{% endblock %}">
 <a class="skip" href="#main">Skip to content</a>
-{% if section != 'ots' %}<canvas id="field" aria-hidden="true" data-mark="{{ brand.mark_d }}"></canvas>{% endif %}
+<canvas id="field" aria-hidden="true" data-mark="{{ brand.mark_d }}"></canvas>
 
 <header class="site-header">
     <div class="wrap">
@@ -88,7 +88,7 @@
 </div>
 
 <script src="{{ static_cdn('site/motion.js') }}"></script>
-{% if section != 'ots' %}<script src="{{ static_cdn('site/field.js') }}"></script>{% endif %}
+<script src="{{ static_cdn('site/field.js') }}"></script>
 {% block scripts %}{% endblock %}
 </body>
 </html>

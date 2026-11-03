@@ -1,5 +1,4 @@
 {% extends "base.html" %}
-{% from "_ots_visual.html" import optic %}
 {% set hero = ots.hero %}
 {% block page_title %}Training & Validation OTS · UniPat AI{% endblock %}
 {% block meta_description %}Off-the-shelf training and validation data built with domain experts and tested on open-weight models. Request the catalog at business@unipat.ai.{% endblock %}
@@ -8,7 +7,7 @@
 {% block body_class %}ots{% endblock %}
 
 {% block content %}
-<section class="phero ots-hero">
+<section class="phero ots-hero" data-scene data-shape="image" data-src="{{ static_cdn('images/ots/glass-layers.jpg') }}" data-fx=".76" data-fy=".46" data-fs="1.2">
     <div class="wrap ots-intro"><div class="col">
         <span class="mono">{{ hero.eyebrow }}</span>
         <h1 data-split>{% for line in hero.title_lines %}{{ line }}{% if not loop.last %}<br>{% endif %}{% endfor %}</h1>
@@ -16,10 +15,10 @@
         <div class="ctas">
             <a class="btn btn-p" data-magnetic href="{{ hero.cta_href }}">{{ hero.cta_label }} <span class="arr" aria-hidden="true">→</span></a>
         </div>
-    </div>{{ optic('ots-hero') }}</div>
+    </div></div>
 </section>
 
-<section class="section ots-results" aria-labelledby="ots-results">
+<section class="section ots-results" aria-labelledby="ots-results" data-scene data-shape="dust" data-fx=".5" data-fs="1.8" data-fa=".25">
     <div class="wrap">
         <h2 class="sr-only" id="ots-results">Training results</h2>
         <ul class="ots-grid" data-stagger>
@@ -28,9 +27,6 @@
                 <div class="ots-card-head">
                 <h3>{{ c.dataset_name }}</h3>
                 <p class="ots-model">{{ c.model }}{% if c.eval_metric %}<span class="ots-metric"><span class="sr-only">, measured by </span>{{ c.eval_metric }}</span>{% endif %}</p>
-                </div>
-                <div class="ots-divider ots-divider--comparison" style="--before: {{ c.before_pct }}%; --after: {{ c.after_pct }}%" aria-hidden="true">
-                    <i class="ots-baseline"></i><i class="ots-gain"></i>
                 </div>
                 <p class="ots-scores">
                     <span class="sr-only">Before training </span><span class="was">{{ c.before_display }}</span>
@@ -47,11 +43,10 @@
     </div>
 </section>
 
-<section class="ots-close" aria-labelledby="ots-more">
+<section class="ots-close" aria-labelledby="ots-more" data-scene data-shape="mark" data-fx=".76" data-fs=".75">
     <div class="wrap ots-outro"><div class="col" data-reveal>
         <h2 id="ots-more">{{ ots.footer_note.paragraphs[0] }}</h2>
         {% for p in ots.footer_note.html[1:] %}<p>{{ p }}</p>{% endfor %}
-    </div>{{ optic('ots-close') }}</div>
+    </div></div>
 </section>
 {% endblock %}
-{% block scripts %}<script src="{{ static_cdn('site/ots.js') }}"></script>{% endblock %}
