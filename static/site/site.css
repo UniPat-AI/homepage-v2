@@ -262,13 +262,14 @@ body:not(.is-reading) .markdown :is(.bv-toc, .ex-toc, .ec-toc, .tb-toc, .sb-toc,
 .btn:hover .arr, .ots-cta:hover .arr, .ots-cta:focus-visible .arr { transform: translateX(4px); }
 .ots-results { padding: 10px 0 80px; }
 .ots-grid { list-style: none; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px; }
-.ots-card { display: grid; grid-template-rows: 1fr auto auto; min-width: 0; padding: 36px 40px 32px; border-radius: 20px; border: 1px solid var(--line); background: #0e1017; transition: opacity .9s ease calc(var(--si, 0) * 80ms), transform 1s var(--ease) calc(var(--si, 0) * 80ms), border-color .35s, background .35s; scroll-margin-top: 100px; }
+.ots-card { display: grid; grid-template-rows: 1fr auto auto auto; min-width: 0; padding: 36px 40px 32px; border-radius: 20px; border: 1px solid var(--line); background: #0e1017; transition: opacity .9s ease calc(var(--si, 0) * 80ms), transform 1s var(--ease) calc(var(--si, 0) * 80ms), border-color .35s, background .35s; scroll-margin-top: 100px; }
 .ots-card:hover, .ots-card:focus-within { border-color: rgba(221, 227, 241, .2); background: #11131b; }
 .ots-card h3 { font-weight: 500; font-size: clamp(28px, 2.5vw, 36px); line-height: 1.18; letter-spacing: -.025em; overflow-wrap: anywhere; }
 .ots-model { display: flex; flex-wrap: wrap; align-items: baseline; gap: 2px 12px; color: var(--soft); font-size: 14px; margin-top: 12px; }
 .ots-metric { font-size: 12.5px; color: var(--muted); }
-/* Whitespace separates the scores; equal header rows keep paired cards aligned. */
-.ots-scores { display: flex; align-items: baseline; gap: 12px; margin-top: 32px; font-size: 15px; font-variant-numeric: tabular-nums; }
+/* Equal header rows keep the quiet dividing rules aligned across paired cards. */
+.ots-divider { height: 1px; margin: 28px 0 22px; background: rgba(221, 227, 241, .24); }
+.ots-scores { display: flex; align-items: baseline; gap: 12px; font-size: 15px; font-variant-numeric: tabular-nums; }
 .ots-scores .was { color: var(--muted); }
 .ots-scores .to { color: var(--muted); }
 .ots-scores .now { color: var(--text); }
@@ -370,7 +371,7 @@ body:not(.is-reading) .markdown :is(.bv-toc, .ex-toc, .ec-toc, .tb-toc, .sb-toc,
     .ots-results { padding-bottom: 44px; }
     .ots-card { padding: 28px 24px 24px; border-radius: 18px; }
     .ots-card h3 { font-size: 28px; }
-    .ots-scores { margin-top: 28px; }
+    .ots-divider { margin: 24px 0 20px; }
     .ots-lift { font-size: 26px; }
     .ots-close h2 { font-size: 40px; }
     .ots-close p { font-size: 17px; }
