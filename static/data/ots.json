@@ -1,0 +1,27 @@
+{
+  "hero": {
+    "eyebrow": "OFF-THE-SHELF",
+    "title_lines": ["Training & Validation", "Off-the-Shelf Data"],
+    "description": "Datasets built with domain experts and tested on open-weight models, so you can see the lift before you commit.\nDrop them into your pipeline and start iterating this week.",
+    "cta_label": "Get the Catalog",
+    "cta_href": "mailto:business@unipat.ai"
+  },
+  "cards": [
+    {"id": "biomysterybench", "dataset_name": "BioMysteryBench", "model": "DeepSeek-V4-Flash", "before_pct": 73.3, "after_pct": 81.1, "before_display": "73.30%", "after_display": "81.10%", "delta_display": "+7.8pp", "eval_metric": "pass@1"},
+    {"id": "jobbench", "dataset_name": "JobBench", "model": "DeepSeek-V4-Flash", "before_pct": 48.98, "after_pct": 62.03, "before_display": "48.98%", "after_display": "62.03%", "delta_display": "+13.05pp", "eval_metric": "rubrics score"},
+    {"id": "automation-bench", "dataset_name": "Automation Bench", "model": "Qwen3.8-27B", "before_pct": 39.2, "after_pct": 49.2, "before_display": "39.20%", "after_display": "49.20%", "delta_display": "+10pp", "eval_metric": "pass@1"},
+    {"id": "frontier-science-research", "dataset_name": "Frontier Science-Research", "model": "GLM-5.3", "before_pct": 25.0, "after_pct": 37.78, "before_display": "25.00%", "after_display": "37.78%", "delta_display": "+12.78pp", "eval_metric": "success rate"},
+    {"id": "apex-agent-v1", "dataset_name": "Apex-agent v1.0", "model": "Qwen3.8-27B", "before_pct": 33.5, "after_pct": 40.2, "before_display": "33.50%", "after_display": "40.20%", "delta_display": "+6.7pp", "eval_metric": "pass@1"},
+    {"id": "scicode-verified-main", "dataset_name": "SciCode Verified", "model": "Qwen3.8-27B", "before_pct": 82.93, "after_pct": 92.1, "before_display": "82.93%", "after_display": "92.10%", "delta_display": "+9.17pp", "eval_metric": "Subtask avg@3 · With background"}
+  ],
+  "card_cta_label": "Request the Full Catalog",
+  "card_cta_href": "mailto:business@unipat.ai",
+  "footer_note": {
+    "paragraphs": [
+      "Looking for more?",
+      "Our data catalog extends beyond what’s shown here. Contact us at business@unipat.ai."
+    ],
+    "email": "business@unipat.ai",
+    "email_href": "mailto:business@unipat.ai"
+  }
+}

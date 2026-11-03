@@ -1,10 +1,14 @@
 /* UniPat particle field — one canvas shared by every page.
    Each [data-scene] element names the shape the particles assemble into while it is
    centred on screen, plus where the shape sits:
-     data-shape  mark | sphere | plane | ring | bars | helix | dust | image
+     data-shape  mark | sphere | plane | ring | bars | helix | gate | dust | image
      data-src    image URL when data-shape="image" (falls back to the mark)
+     data-tint   optional particle colour for an image (otherwise sampled colours)
+     data-detail "fine" preserves small points in a point-cloud reference image
      data-fx/fy  centre as a fraction of the viewport (desktop; mobile is centred)
      data-fs     scale        data-fa  opacity
+   A child [data-field-anchor] reserves a layout box for a scene's particles;
+   its centre and size replace viewport positioning for that scene only.
    Particle positions are handed to the next page through sessionStorage, so the
    field flows from one page's shape into the next instead of starting over. */
 (function () {
@@ -78,20 +82,41 @@
         }
         return out;
     }
+    // off-the-shelf data: two facing dot-matrix panels with lit inner edges, rays fanning outward
+    function gate(n) {
+        var out = [], R = rnd(23), edge = n * .18 | 0, panel = n * .5 | 0;
+        var RAYS = [[-.3, -.56], [-.2, -.4], [-.08, -.2], [.08, .2], [.2, .4], [.3, .56]];
+        for (var i = 0; i < n; i++) {
+            var s = i % 2 ? 1 : -1, x, y, z, c;
+            if (i < edge) {
+                // the bright hinge: a tight column of dots on each inner edge
+                x = .06 + R() * .012; y = Math.round((R() * 2 - 1) * 30) / 30 * .34; z = 0; c = R() < .1 ? '#ecd9a6' : '#f6f7fb';
+            } else if (i < edge + panel) {
+                // the panel recedes from the hinge: thinner and shorter toward its far edge
+                var u = Math.round(Math.pow(R(), 1.6) * 22) / 22, h = .34 - u * .1;
+                x = .08 + u * .5; y = Math.round((R() * 2 - 1) * 26) / 26 * h; z = u * .25; c = R() < .6 ? '#dde3f1' : '#a3b2d8';
+            } else {
+                var ray = RAYS[(R() * RAYS.length) | 0], t = Math.pow(R(), .8);
+                x = .14 + t * .74 + (R() - .5) * .03; y = ray[0] + (ray[1] - ray[0]) * t + (R() - .5) * .03 * (1 + t); z = t * .2; c = R() < .05 ? '#ecd9a6' : '#a9aec0';
+            }
+            out.push({ x: s * x, y: y, z: z + (R() - .5) * .02, c: c });
+        }
+        return out;
+    }
     function dust(n) {
         var out = [];
         for (var i = 0; i < n; i++) out.push({ x: (Math.random() - .5) * 3.2, y: (Math.random() - .5) * 2, z: (Math.random() - .5) * 1.5 });
         return out;
     }
-    var FLAGS = { mark: { sway: 1 }, ring: { sway: 1 }, image: { sway: .4 }, sphere: { spin: 1 }, bars: { swing: 1, yaw: -.42, tilt: .3 }, helix: { spin: 1 }, plane: { spin: 1, wave: 1 }, dust: { drift: 1 } };
-    var MAKE = { mark: sampleMark, sphere: sphere, plane: plane, ring: ring, bars: bars, helix: helix, dust: dust, image: sampleMark };
+    var FLAGS = { mark: { sway: 1 }, ring: { sway: 1 }, gate: { sway: .7 }, image: { sway: .4 }, sphere: { spin: 1 }, bars: { swing: 1, yaw: -.42, tilt: .3 }, helix: { spin: 1 }, plane: { spin: 1, wave: 1 }, dust: { drift: 1 } };
+    var MAKE = { mark: sampleMark, sphere: sphere, plane: plane, ring: ring, bars: bars, helix: helix, gate: gate, dust: dust, image: sampleMark };
 
     // a cover image re-drawn in particles: keep pixels that stand out from the background
-    function sampleImage(src, n, done) {
+    function sampleImage(src, n, done, tint, detail) {
         var img = new Image(); img.crossOrigin = 'anonymous'; img.decoding = 'async';
         img.onload = function () {
             try {
-                var S = 180, ar = img.naturalWidth / img.naturalHeight, w = ar >= 1 ? S : Math.round(S * ar), h = ar >= 1 ? Math.round(S / ar) : S;
+                var S = detail === 'fine' ? 480 : 180, ar = img.naturalWidth / img.naturalHeight, w = ar >= 1 ? S : Math.round(S * ar), h = ar >= 1 ? Math.round(S / ar) : S;
                 var off = document.createElement('canvas'); off.width = w; off.height = h;
                 var o = off.getContext('2d', { willReadFrequently: true }); o.drawImage(img, 0, 0, w, h);
                 var d = o.getImageData(0, 0, w, h).data;
@@ -108,7 +133,7 @@
                 }
                 if (pts.length < 400) return;
                 var out = [];
-                for (var i = 0; i < n; i++) { var q = pts[(Math.random() * pts.length) | 0]; out.push({ x: q.x * .95 + (Math.random() - .5) * .012, y: q.y * .95 + (Math.random() - .5) * .012, z: (Math.random() - .5) * .06, c: q.c }); }
+                for (var i = 0; i < n; i++) { var q = pts[(Math.random() * pts.length) | 0]; out.push({ x: q.x * .95 + (Math.random() - .5) * .012, y: q.y * .95 + (Math.random() - .5) * .012, z: (Math.random() - .5) * .06, c: tint || q.c }); }
                 done(out);
             } catch (e) { /* cross-origin image without CORS: keep the mark */ }
         };
@@ -118,7 +143,7 @@
     var sections = Array.prototype.slice.call(document.querySelectorAll('[data-scene]'));
     var scenes = sections.map(function (s) {
         var d = s.dataset;
-        return { shape: d.shape || 'mark', src: d.src, fx: +(d.fx || .7), fy: +(d.fy || .5), fs: +(d.fs || 1), fa: d.fa === undefined ? 1 : +d.fa };
+        return { shape: d.shape || 'mark', src: d.src, tint: d.tint, detail: d.detail, anchor: s.querySelector('[data-field-anchor]'), fx: +(d.fx || .7), fy: +(d.fy || .5), fs: +(d.fs || 1), fa: d.fa === undefined ? 1 : +d.fa };
     });
     if (!scenes.length) scenes = [{ shape: 'mark', fx: .5, fy: .5, fs: 1, fa: 1 }];
 
@@ -151,7 +176,7 @@
         T = scenes.map(function (sc) { return MAKE[sc.shape] ? MAKE[sc.shape](N) : sampleMark(N); });
         META = scenes.map(function (sc) { return FLAGS[sc.shape] || FLAGS.mark; });
         scenes.forEach(function (sc, idx) {
-            if (sc.shape === 'image' && sc.src) sampleImage(sc.src, N, function (pts) { if (pts.length !== N) return; T[idx] = pts; if (reduce) settle(); });
+            if (sc.shape === 'image' && sc.src) sampleImage(sc.src, N, function (pts) { if (pts.length !== N) return; T[idx] = pts; if (reduce) settle(); }, sc.tint, sc.detail);
         });
         restored = restore() || restored;
     }
@@ -166,6 +191,18 @@
     }
     function ease(k) { return k < .5 ? 4 * k * k * k : 1 - Math.pow(-2 * k + 2, 3) / 2; }
     function mix(a, b, k) { return a + (b - a) * k; }
+
+    function placement(sc, mobile) {
+        if (sc.anchor) {
+            var r = sc.anchor.getBoundingClientRect();
+            return { x: r.left + r.width / 2, y: r.top + r.height / 2, scale: Math.min(r.width, r.height) * .42 * sc.fs };
+        }
+        return {
+            x: W * (mobile ? .5 : sc.fx),
+            y: H * Math.min(sc.fy, mobile ? .24 : 1),
+            scale: Math.min(mobile ? W * .32 : W * .24, H * (mobile ? .2 : .36)) * sc.fs
+        };
+    }
 
     var t0 = performance.now(), rotY = 0, tilt = { x: 0, y: 0 }, running = true;
     function frame(now) {
@@ -184,9 +221,10 @@
         ctx.globalCompositeOperation = 'lighter';
 
         var mobile = W < 900;
-        // on phones the copy sits at the bottom of each scene, so the shape moves into the space above it
-        var cx = mobile ? W * .5 : W * mix(A0.fx, B0.fx, k), cy = H * Math.min(mix(A0.fy, B0.fy, k), mobile ? .24 : 1);
-        var S = Math.min(mobile ? W * .32 : W * .24, H * (mobile ? .2 : .36)) * mix(A0.fs, B0.fs, k), alpha = mix(A0.fa, B0.fa, k);
+        // Layout-bound scenes follow their reserved space, including during a morph.
+        var pa = placement(A0, mobile), pb = a === b ? pa : placement(B0, mobile);
+        var cx = mix(pa.x, pb.x, k), cy = mix(pa.y, pb.y, k);
+        var S = mix(pa.scale, pb.scale, k), alpha = mix(A0.fa, B0.fa, k);
         rotY += reduce ? 0 : .0035;
         tilt.x += ((mouse.y > -1e3 ? (mouse.y / H - .5) : 0) * .5 - tilt.x) * .04;
         tilt.y += ((mouse.x > -1e3 ? (mouse.x / W - .5) : 0) * .7 - tilt.y) * .04;
@@ -211,6 +249,8 @@
             var dx = p.x - mouse.x, dy = p.y - mouse.y, d2 = dx * dx + dy * dy;
             if (d2 < 14400) { var f = (1 - Math.sqrt(d2) / 120) * 2.2; p.vx += dx * f * .04; p.vy += dy * f * .04; }
             p.vx *= .78; p.vy *= .78; p.x += p.vx; p.y += p.vy;
+            // Reduced-motion scrolling has no animation loop to catch up to the box.
+            if (reduce && (A0.anchor || B0.anchor)) { p.x = gx; p.y = gy; p.vx = p.vy = 0; }
 
             var depth = Math.max(.25, Math.min(1, persp - .35));
             ctx.globalAlpha = alpha * depth * (.55 + .45 * Math.sin(t * 2 + p.seed * 20));

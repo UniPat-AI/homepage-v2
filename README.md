@@ -111,3 +111,10 @@ python deploy/validate.py
 `requirements.txt`，并在 push 前使用 Python 3.11 完成检查。
 依赖变更后，还需要部署管理员重新构建预览环境的固定运行镜像。
 不要将任何密钥或密码提交到仓库。
+
+## OTS 数据目录
+
+编辑 `static/data/ots.json` 可以更新 Training & Validation OTS 页面。
+这些数据是公开内容，通过现有的 `static/` 打包规则随网站发布。
+分支预览使用 `main` 上的可信打包程序，因此仅在功能分支的允许列表中新增内容目录，
+并不会将该目录包含在预览发布包中。

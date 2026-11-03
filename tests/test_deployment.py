@@ -1,6 +1,9 @@
 import io
 import json
 from pathlib import Path
+import shutil
+import subprocess
+import sys
 import tarfile
 import tempfile
 import unittest
@@ -13,6 +16,7 @@ class ReleaseBundleTests(unittest.TestCase):
         for name in (".env", "../app.py", "/app.py", "static/../secrets", "static/.env", "content/blog_previews/fellows-v3.md", "templates/designs/v8.html", ".git/config"):
             self.assertFalse(allowed(name), name)
         self.assertTrue(allowed("static/sciencevision/viewer/shared/vendor/build/three.js"))
+        self.assertTrue(allowed("static/data/ots.json"))
 
     def fixture(self, path):
         for name in ROOT_FILES | {"deploy/validate.py", "static/site/site.css"}:
@@ -38,6 +42,43 @@ class ReleaseBundleTests(unittest.TestCase):
             other.mkdir()
             with self.assertRaisesRegex(ValueError, "manifest mismatch"):
                 unpack(archive, other, "b" * 40)
+
+    def test_ots_renders_from_unpacked_release(self):
+        project = Path(__file__).resolve().parents[1]
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            source = root / "source"
+            source.mkdir()
+            for name in ROOT_FILES | {"deploy/validate.py", "static/data/ots.json"}:
+                target = source / name
+                target.parent.mkdir(parents=True, exist_ok=True)
+                shutil.copyfile(project / name, target)
+            shutil.copytree(project / "templates", source / "templates")
+            archive = root / "site.tar.gz"
+            build(source, archive, "a" * 40)
+            release = root / "release"
+            release.mkdir()
+            unpack(archive, release, "a" * 40)
+
+            # A fresh process must render using only the packaged files, with no
+            # access to the source checkout's catalog or imported Flask app.
+            result = subprocess.run(
+                [sys.executable, "-c", """
+import json
+from pathlib import Path
+from wsgi import app
+app.testing = True
+catalog = json.loads(Path('static/data/ots.json').read_text(encoding='utf-8'))
+response = app.test_client().get('/ots')
+assert response.status_code == 200
+for card in catalog['cards']:
+    assert 'id="' + card['id'] + '"' in response.text
+    assert card['before_display'] in response.text
+    assert card['after_display'] in response.text
+"""],
+                cwd=release, capture_output=True, text=True,
+            )
+            self.assertEqual(result.returncode, 0, result.stderr)
 
     def test_rejects_symlinks_before_extracting(self):
         with tempfile.TemporaryDirectory() as tmp:

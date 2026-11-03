@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+{% set hero = ots.hero %}
+{% block page_title %}Training & Validation OTS · UniPat AI{% endblock %}
+{% block meta_description %}Off-the-shelf training and validation data built with domain experts and tested on open-weight models. Request the catalog at business@unipat.ai.{% endblock %}
+{% block og_title %}Training & Validation OTS · UniPat AI{% endblock %}
+{% block og_description %}Off-the-shelf training and validation data built with domain experts and tested on open-weight models. Request the catalog at business@unipat.ai.{% endblock %}
+{% block body_class %}ots{% endblock %}
+
+{% block content %}
+<section class="phero ots-hero" data-scene data-shape="image" data-src="{{ static_cdn('images/ots/segmented-ring.jpg') }}" data-tint="#dde3f1" data-detail="fine" data-fx=".76" data-fy=".46" data-fs="1">
+    <div class="wrap ots-intro"><div class="col">
+        <span class="mono">{{ hero.eyebrow }}</span>
+        <h1 data-split>{% for line in hero.title_lines %}{{ line }}{% if not loop.last %}<br>{% endif %}{% endfor %}</h1>
+        <p>{% for line in hero.description.split('\n') %}{{ line }}{% if not loop.last %}<br>{% endif %}{% endfor %}</p>
+        <div class="ctas">
+            <a class="btn btn-p" data-magnetic href="{{ hero.cta_href }}">{{ hero.cta_label }} <span class="arr" aria-hidden="true">→</span></a>
+        </div>
+    </div></div>
+</section>
+
+<section class="section ots-results" aria-labelledby="ots-results" data-scene data-shape="dust" data-fx=".5" data-fs="1.8" data-fa=".25">
+    <div class="wrap">
+        <h2 class="sr-only" id="ots-results">Training results</h2>
+        <ul class="ots-grid" data-stagger>
+            {% for c in ots.cards %}
+            <li class="ots-card" id="{{ c.id }}" data-reveal>
+                <div class="ots-card-head">
+                <h3>{{ c.dataset_name }}</h3>
+                <p class="ots-model">{{ c.model }}{% if c.eval_metric %}<span class="ots-metric"><span class="sr-only">, measured by </span>{{ c.eval_metric }}</span>{% endif %}</p>
+                </div>
+                <p class="ots-scores">
+                    <span class="sr-only">Before training </span><span class="was">{{ c.before_display }}</span>
+                    <span class="to" aria-hidden="true">→</span>
+                    <span class="sr-only">, after training </span><span class="now">{{ c.after_display }}</span>
+                </p>
+                <div class="ots-foot">
+                    <p class="ots-lift"><span class="sr-only">Improvement </span><span class="plus">+</span><span data-count="{{ c.delta_value }}">{{ c.delta_value }}</span><span class="ots-unit">pp</span></p>
+                    <a class="ots-cta" href="{{ ots.card_cta_href }}">{{ ots.card_cta_label }} <span class="arr" aria-hidden="true">→</span></a>
+                </div>
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
+</section>
+
+<section class="ots-close" aria-labelledby="ots-more" data-scene data-shape="mark">
+    <div class="wrap ots-outro"><div class="col" data-reveal>
+        <h2 id="ots-more">{{ ots.footer_note.paragraphs[0] }}</h2>
+        {% for p in ots.footer_note.html[1:] %}<p>{{ p }}</p>{% endfor %}
+    </div><div class="ots-close-visual" data-field-anchor aria-hidden="true"></div></div>
+</section>
+{% endblock %}
