@@ -11,7 +11,7 @@ Layout: feature
   --ink: #12141c; --soft: #3f4553; --muted: #6b7280; --line: #e3e7ef; --wash: #eceff5; --card: #fff;
   --ember: #ff5a24; --ember-ink: #c2410c; --ember-wash: #fbeee6; --teal: #0f6d70; --teal-wash: #e4f1ef;
   --head: var(--sans); --body: var(--sans); --label: var(--mono);
-  --top: 80px; --banner-h: 64px;
+  --top: 80px;
   color: var(--ink); font-family: var(--body);
 }
 .fw4 h1, .fw4 h2, .fw4 h3 { margin: 0; color: var(--ink); }
@@ -19,8 +19,8 @@ Layout: feature
 .fw4 a { text-decoration: none; }
 .fw4 a:hover { text-decoration: none; }
 
-/* 2 · Applications banner */
-.fw4-banner { position: sticky; top: calc(var(--top) + 10px); z-index: 5; display: flex; align-items: center; gap: 18px; min-height: var(--banner-h); margin: 0 0 30px; padding: 10px 10px 10px 22px; border-radius: 16px; background: var(--ink); color: #edeff5; overflow: hidden; isolation: isolate; box-shadow: 0 18px 40px -24px rgba(18, 20, 28, .7); }
+/* 2 · Applications banner stays in the article flow so it never covers content. */
+.fw4-banner { position: relative; display: flex; align-items: center; gap: 18px; min-height: 64px; margin: 0 0 30px; padding: 10px 10px 10px 22px; border-radius: 16px; background: var(--ink); color: #edeff5; overflow: hidden; isolation: isolate; box-shadow: 0 18px 40px -24px rgba(18, 20, 28, .7); }
 .fw4-banner::before { content: ""; position: absolute; z-index: -1; inset: auto -10% -60px 30%; height: 120px; background: linear-gradient(90deg, transparent, rgba(15, 109, 112, .55) 30%, rgba(255, 90, 36, .55) 75%, rgba(255, 154, 90, .4)); filter: blur(34px); }
 .fw4-banner-text { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 14px; min-width: 0; flex: 1; font-family: var(--label); font-size: 12px; letter-spacing: .14em; text-transform: uppercase; }
 .fw4-banner-text strong { display: inline-flex; align-items: center; gap: 12px; color: #fff; font-weight: 600; }
@@ -56,7 +56,7 @@ Layout: feature
 
 /* Main column + rail */
 .fw4-main { display: grid; grid-template-columns: minmax(0, 1fr) 280px; gap: 56px; margin-top: 72px; }
-.fw4-sec { padding-bottom: 72px; scroll-margin-top: calc(var(--top) + var(--banner-h) + 30px); }
+.fw4-sec { padding-bottom: 72px; scroll-margin-top: calc(var(--top) + 30px); }
 .fw4-eyebrow { font-family: var(--label); font-size: 11px; letter-spacing: .16em; text-transform: uppercase; color: var(--ember-ink); margin-bottom: 12px !important; }
 .fw4 h2 { font-family: var(--head); font-size: 30px; font-weight: 600; line-height: 1.2; letter-spacing: -.025em; margin-bottom: 22px; text-wrap: balance; }
 .fw4-prose { font-size: 18px; line-height: 1.72; color: #2a2f3c; }
@@ -143,7 +143,7 @@ Layout: feature
 .fw4-loc svg { flex: none; margin-top: 4px; color: var(--teal); }
 
 /* Rail */
-.fw4-rail { position: sticky; top: calc(var(--top) + var(--banner-h) + 26px); align-self: start; }
+.fw4-rail { position: sticky; top: calc(var(--top) + 26px); align-self: start; }
 .fw4-card { padding: 24px; border-radius: 18px; background: var(--ink); color: #e5e7eb; position: relative; overflow: hidden; }
 .fw4-card::before { content: ""; position: absolute; width: 340px; height: 90px; left: -60px; bottom: -10px; background: linear-gradient(90deg, #0f6d70, #ff5a24 60%, #ff9a5a); filter: blur(40px); opacity: .5; transform: rotate(-28deg); }
 .fw4-card > * { position: relative; }
@@ -174,8 +174,7 @@ Layout: feature
   .fw4-facts div:nth-child(n+3) { border-top: 1px solid var(--line); }
 }
 @media (max-width: 720px) {
-  .fw4 { --banner-h: 0px; }
-  .fw4-banner { position: relative; top: auto; flex-wrap: wrap; gap: 14px; padding: 16px; }
+  .fw4-banner { min-height: 0; flex-wrap: wrap; gap: 14px; padding: 16px; }
   .fw4-banner-text { flex-direction: column; align-items: flex-start; gap: 8px; font-size: 11px; }
   .fw4-banner-text span { padding: 0 0 0 20px; border: 0; }
   .fw4-banner-cta { width: 100%; justify-content: center; }
