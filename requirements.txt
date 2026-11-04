@@ -1,2 +1,2 @@
 Flask==3.0.3
-Markdown==3.8.1
+Markdown==3.6

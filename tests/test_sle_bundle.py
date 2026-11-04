@@ -15,7 +15,7 @@ class SLEBundleTests(unittest.TestCase):
     def test_dependencies_match_the_runtime_lock(self):
         parse = lambda name: dict(line.split("==") for line in (ROOT / name).read_text().splitlines() if "==" in line)
         direct, locked = parse("requirements.txt"), parse("requirements.lock")
-        self.assertEqual(direct["Markdown"], "3.8.1")
+        self.assertEqual(direct["Markdown"], "3.6")
         for name, version in direct.items():
             self.assertEqual(locked[name], version)
         self.assertEqual((ROOT / "requirements-production.txt").read_text().strip(), "-r requirements.lock")

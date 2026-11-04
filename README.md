@@ -128,11 +128,11 @@ python deploy/validate.py
   `tests/test_sle_bundle.py` 在解包后的独立进程中验证运行。
   `deploy/validate.py` 同时检查 SLE 重定向和全部页面资源。
 
-此迁移将 Markdown 固定为 **3.8.1**，`requirements.txt` 与
-`requirements.lock` 已同步。首次部署分支预览前，管理员需用新锁文件重建
-`deploy/preview/Dockerfile` 对应的运行镜像，并更新受保护配置里的
-`runtime_image` 与 `requirements_sha256`；不要跳过原有依赖哈希校验。
-正式部署仍由既有流程为每个版本安装独立环境。
+SLE 使用现有固定运行镜像的 **Markdown 3.6**，`requirements.txt` 与
+`requirements.lock` 均与新版主分支对齐。Python 3.11 下已验证文章、
+页面资源、跳转和解包后的运行，不需要为 SLE 单独更新预览镜像。
+现有依赖哈希校验保持启用。后续依赖升级应由官网团队统一更新锁文件和
+固定运行镜像；正式部署仍为每个版本安装独立环境。
 
 仓库本身为公开仓库：内网预览不意味着分支源码保密。SLE 草稿、署名和图表
 在获得公开授权前仅保留本地；不得自动推送本地迁移分支。
