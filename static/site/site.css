@@ -43,7 +43,8 @@ img { max-width: 100%; }
 .mono { font: 300 10.5px/1.5 var(--mono); letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
 
 /* ---- header: difference blend keeps it legible over night and paper alike ---- */
-.site-header { position: fixed; inset: 0 0 auto; z-index: 30; mix-blend-mode: difference; }
+/* sticky (not fixed): iOS Safari drifts fixed bars off the top during momentum scroll; the negative margin keeps it overlaying the hero like before */
+.site-header { position: -webkit-sticky; position: sticky; top: 0; margin-bottom: -80px; z-index: 30; mix-blend-mode: difference; }
 /* once the page scrolls, content would slide under the logo: give the bar a frosted night ground */
 .site-header::before { content: ""; position: absolute; inset: 0; z-index: -1; background: rgba(10, 11, 16, .72); backdrop-filter: blur(16px) saturate(140%); -webkit-backdrop-filter: blur(16px) saturate(140%); border-bottom: 1px solid rgba(221, 227, 241, .08); opacity: 0; transition: opacity .35s ease; }
 .site-header.is-scrolled { mix-blend-mode: normal; }
