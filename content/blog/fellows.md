@@ -63,39 +63,21 @@ Layout: feature
 .fw4-prose p + p { margin-top: 1em; }
 .fw4-prose strong { color: var(--ink); }
 
-/* 3 · Bridge: domain researchers ↔ Fellows ↔ AI teams */
-.fw4-bridge { display: grid; grid-template-columns: minmax(0, 1fr) 40px 168px 40px minmax(0, 1fr); align-items: center; margin: 32px 0; }
-.fw4-side { position: relative; align-self: stretch; display: flex; flex-direction: column; padding: 22px 22px 24px; border: 1px solid var(--line); border-radius: 16px; background: var(--card); font-size: 16px; line-height: 1.6; color: var(--soft); outline: none; transition: border-color .25s ease, box-shadow .25s ease, transform .25s ease; }
-.fw4-side-tag { display: flex; align-items: center; gap: 10px; margin-bottom: 12px !important; font-family: var(--label); font-size: 11.5px; font-weight: 600; letter-spacing: .12em; text-transform: uppercase; color: var(--ink); }
-.fw4-side-tag::before { content: ""; width: 10px; height: 10px; border-radius: 3px; background: var(--side); }
-.fw4-side.is-domain { --side: var(--teal); --side-wash: var(--teal-wash); }
-.fw4-side.is-ai { --side: var(--ember-ink); --side-wash: var(--ember-wash); }
-.fw4-side::after { content: ""; position: absolute; top: 50%; width: 9px; height: 9px; margin-top: -5px; border-radius: 50%; background: #fff; border: 1.5px solid var(--side); transition: background .25s ease; }
-.fw4-side.is-domain::after { right: -5px; }
-.fw4-side.is-ai::after { left: -5px; }
-.fw4-link { position: relative; height: 2px; background: repeating-linear-gradient(90deg, #c9cfdb 0 4px, transparent 4px 8px); }
-.fw4-link::after { content: ""; position: absolute; top: 50%; width: 6px; height: 6px; margin-top: -3px; border-radius: 50%; background: var(--dot); opacity: .8; animation: fw4-flow 2.8s linear infinite; }
-.fw4-link.is-left { --dot: var(--teal); }
-.fw4-link.is-right { --dot: var(--ember-ink); }
-.fw4-link.is-right::after { animation-name: fw4-flow-back; }
-@keyframes fw4-flow { from { left: 0; } to { left: calc(100% - 6px); } }
-@keyframes fw4-flow-back { from { left: calc(100% - 6px); } to { left: 0; } }
-.fw4-hub { position: relative; display: grid; place-items: center; align-content: center; gap: 6px; aspect-ratio: 1; border-radius: 50%; padding: 18px; text-align: center; background: radial-gradient(circle at 50% 35%, #fff 0, var(--ember-wash) 70%); border: 1px solid #e3a487; outline: none; cursor: default; transition: transform .3s ease, box-shadow .3s ease; }
-.fw4-hub::before { content: ""; position: absolute; inset: -9px; border-radius: 50%; border: 1px dashed rgba(194, 65, 12, .35); transition: inset .3s ease, border-color .3s ease; }
-.fw4-hub-kicker { font-family: var(--label); font-size: 10px; font-weight: 600; letter-spacing: .14em; text-transform: uppercase; color: var(--ember-ink); }
-.fw4-hub strong { font-size: 18px; font-weight: 600; line-height: 1.15; letter-spacing: -.015em; color: var(--ink); }
-.fw4-hub-q { font-size: 22px; line-height: 1; color: var(--ember-ink); }
-/* hover / focus / tap: a side lights its own path to the hub; the hub lights both */
-.fw4-side:is(:hover, :focus-visible, :focus) { border-color: var(--side); box-shadow: 0 0 0 4px var(--side-wash); }
-.fw4-side:is(:hover, :focus-visible, :focus)::after { background: var(--side); }
-.fw4-bridge:has(.is-domain:is(:hover, :focus)) .is-left,
-.fw4-bridge:has(.is-ai:is(:hover, :focus)) .is-right,
-.fw4-bridge:has(.fw4-hub:is(:hover, :focus)) .fw4-link { background: var(--dot); }
-.fw4-bridge:has(.fw4-side:is(:hover, :focus), .fw4-hub:is(:hover, :focus)) .fw4-hub { transform: scale(1.04); box-shadow: 0 16px 34px -18px rgba(194, 65, 12, .6); }
-.fw4-bridge:has(.fw4-side:is(:hover, :focus), .fw4-hub:is(:hover, :focus)) .fw4-hub::before { inset: -14px; border-color: rgba(194, 65, 12, .6); }
-.fw4-bridge:has(.fw4-hub:is(:hover, :focus)) .fw4-side { border-color: var(--side); box-shadow: 0 0 0 4px var(--side-wash); }
-.fw4-bridge:has(.fw4-hub:is(:hover, :focus)) .fw4-side::after { background: var(--side); }
-.fw4-hub:focus-visible, .fw4-side:focus-visible { outline: 2px solid var(--ink); outline-offset: 4px; }
+/* 3 · Bridge: what each side brings and may need, joined by the shared Fellows band */
+.fw4-bridge { margin: 34px 0; border: 1px solid var(--line); border-radius: 20px; background: var(--card); overflow: hidden; }
+.fw4-bridge-sides { display: grid; grid-template-columns: 1fr 1fr; padding: 32px 0 30px; }
+.fw4-side { display: flex; flex-direction: column; padding: 2px 34px; }
+.fw4-side + .fw4-side { border-left: 1px solid var(--line); }
+.fw4-side-tag { display: flex; align-items: center; gap: 12px; margin-bottom: 22px !important; font-family: var(--label); font-size: 11.5px; font-weight: 600; letter-spacing: .12em; text-transform: uppercase; color: var(--ink); }
+.fw4-side-tag::before { content: ""; width: 18px; height: 2px; background: var(--ember-ink); }
+.fw4-side h3 { margin-bottom: 16px; font-family: var(--head); font-size: clamp(30px, 3.4vw, 40px); font-weight: 600; line-height: 1.08; letter-spacing: -.035em; }
+.fw4-side-lead { font-size: 17px; line-height: 1.6; color: var(--soft); }
+.fw4-side-need { margin-top: auto; padding-top: 18px; border-top: 1px solid var(--line); font-size: 16px; line-height: 1.6; color: var(--soft); }
+.fw4-side-need span { display: block; margin-bottom: 8px; font-family: var(--label); font-size: 10.5px; letter-spacing: .14em; text-transform: uppercase; color: var(--muted); }
+.fw4-side-body { flex: 1; display: flex; flex-direction: column; gap: 26px; }
+.fw4-bridge-joint { padding: 24px 34px 26px; border-top: 1px solid var(--line); background: #f7f3ee; }
+.fw4-bridge-joint strong { display: block; margin-bottom: 6px; font-family: var(--label); font-size: 15px; font-weight: 500; letter-spacing: .08em; text-transform: uppercase; color: var(--ember-ink); }
+.fw4-bridge-joint p { font-size: 18px; line-height: 1.5; color: var(--soft); }
 
 /* How it works */
 .fw4-steps { list-style: none; margin: 28px 0; padding: 0; counter-reset: step; }
@@ -187,20 +169,12 @@ Layout: feature
   .fw4-cases { grid-template-columns: 1fr; }
   .fw4-case, .fw4-case:nth-child(even) { grid-column: auto; grid-row: auto; display: flex; flex-direction: column; }
   .fw4-case h3 { align-self: auto; }
-  /* bridge stacks vertically; the paths turn into vertical connectors */
-  .fw4-bridge { grid-template-columns: 1fr; justify-items: center; }
-  .fw4-side { width: 100%; }
-  .fw4-side::after { top: auto; left: 50% !important; right: auto !important; margin: 0 0 0 -5px; }
-  .fw4-side.is-domain::after { bottom: -5px; }
-  .fw4-side.is-ai::after { top: -5px; }
-  .fw4-link { width: 2px; height: 34px; background: repeating-linear-gradient(180deg, #c9cfdb 0 4px, transparent 4px 8px); }
-  .fw4-link::after { left: 50% !important; margin: 0 0 0 -3px; animation-name: fw4-flow-v; }
-  .fw4-link.is-right::after { animation-name: fw4-flow-v-back; }
-  .fw4-hub { width: 168px; margin: 10px 0; }
+  .fw4-bridge-sides { grid-template-columns: 1fr; padding: 0; }
+  .fw4-side { padding: 26px 22px; }
+  .fw4-side + .fw4-side { border-left: 0; border-top: 1px solid var(--line); }
+  .fw4-bridge-joint { padding: 22px; }
   .fw4-final { padding: 30px 20px; }
 }
-@keyframes fw4-flow-v { from { top: 0; } to { top: calc(100% - 6px); } }
-@keyframes fw4-flow-v-back { from { top: calc(100% - 6px); } to { top: 0; } }
 @media (max-width: 380px) {
   .fw4-facts { grid-template-columns: 1fr; }
   .fw4-facts div + div { border-left: 0; border-top: 1px solid var(--line); }
@@ -208,7 +182,6 @@ Layout: feature
 }
 @media (prefers-reduced-motion: reduce) {
   .fw4 *, .fw4 *::before, .fw4 *::after { animation: none !important; transition: none !important; }
-  .fw4-link::after { display: none; }
 }
 </style>
 
@@ -242,12 +215,26 @@ Layout: feature
 <div class="fw4-prose">
 <p>Across disciplines, researchers see opportunities for AI to advance their work. Yet domain researchers and AI teams often work separately, with limited opportunities for sustained collaboration.</p>
 </div>
-<div class="fw4-bridge" role="group" aria-label="UniPat Fellows connects domain researchers and AI teams around shared research problems">
-<article class="fw4-side is-domain" tabindex="0"><p class="fw4-side-tag">Domain researchers</p><p>Know which questions matter, how to frame a research problem, and how to judge the results. They may, however, lack dedicated support from AI researchers and engineers.</p></article>
-<div class="fw4-link is-left" aria-hidden="true"></div>
-<div class="fw4-hub" tabindex="0"><span class="fw4-hub-q" aria-hidden="true">?</span><strong>Shared research problems</strong><span class="fw4-hub-kicker">UniPat Fellows</span></div>
-<div class="fw4-link is-right" aria-hidden="true"></div>
-<article class="fw4-side is-ai" tabindex="0"><p class="fw4-side-tag">AI teams</p><p>Bring expertise in models and tools, but may lack the domain knowledge needed to define research tasks and validate results.</p></article>
+<div class="fw4-bridge">
+<div class="fw4-bridge-sides">
+<article class="fw4-side">
+<p class="fw4-side-tag">Domain researchers</p>
+<h3>Questions<br>that matter.</h3>
+<div class="fw4-side-body">
+<p class="fw4-side-lead">Know how to frame research problems and judge the results.</p>
+<p class="fw4-side-need"><span>May need</span>Dedicated AI research and engineering support.</p>
+</div>
+</article>
+<article class="fw4-side">
+<p class="fw4-side-tag">AI teams</p>
+<h3>Models<br>and tools.</h3>
+<div class="fw4-side-body">
+<p class="fw4-side-lead">Bring expertise in AI research and engineering.</p>
+<p class="fw4-side-need"><span>May need</span>Domain knowledge to define tasks and validate results.</p>
+</div>
+</article>
+</div>
+<div class="fw4-bridge-joint"><strong>UniPat Fellows</strong><p>Working together on shared research problems.</p></div>
 </div>
 <div class="fw4-prose">
 <p>We’re launching <strong>UniPat Fellows</strong> at the UniPat AI Exploration Lab to bring domain researchers and AI teams together around shared research problems.</p>
