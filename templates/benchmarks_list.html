@@ -30,7 +30,7 @@
 
         <div class="btable" data-stagger>
             {% for entry in entries %}
-            {% set ext = entry.meta.get('externalurl') %}
+            {% set ext = entry.get('project_url') or entry.meta.get('externalurl') %}
             <a class="brow2" data-reveal data-domain="{{ entry.meta.get('domain', '') }}" href="{{ ext or url_for('benchmarks_detail', slug=entry.slug) }}"{% if ext %} target="_blank" rel="noopener"{% endif %}>
                 <div class="img"><img src="{{ entry.header_image }}" alt="" loading="lazy"></div>
                 <div>

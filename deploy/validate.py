@@ -2,6 +2,7 @@
 from html.parser import HTMLParser
 from pathlib import Path
 import sys
+from urllib.parse import urlsplit
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
@@ -29,7 +30,16 @@ def validate():
     for area in ("blog", "benchmarks"):
         paths.extend("/" + area + "/" + p.stem for p in (ROOT / "content" / area).glob("*.md"))
     for path in paths:
-        Assets().feed(get(path).text)
+        if path == "/benchmarks/ScienceLastExam":
+            response = get(path, 302)
+            from app import sle_homepage
+            with app.test_request_context(base_url="https://unipat.ai"):
+                expected = sle_homepage()
+            assert response.headers["Location"] == expected
+            target = urlsplit(expected)
+            assert target.scheme == "https" and target.hostname not in {"localhost", "127.0.0.1", "::1"}
+        else:
+            Assets().feed(get(path).text)
     for path in assets:
         get(path)
     home = get("/").text
@@ -38,6 +48,14 @@ def validate():
     assert "Allow: /" in get("/robots.txt").text
     get("/sitemap.xml")
     assert get("/_health").json == {"status": "ok", "release": RELEASE}
+    if (ROOT / "content/blog/ScienceLastExam.md").exists():
+        for short in ("/blog/SLE", "/blog/sciencelastexam"):
+            assert get(short, 301).headers["Location"] == "/blog/ScienceLastExam"
+        assert get("/benchmarks/SLE", 302).headers["Location"] == expected
+        article = get("/blog/ScienceLastExam").text
+        assert "<!-- SLE_" not in article and "localhost:" not in article
+        assert 'id="sle-contributors"' in article and 'id="sle-results"' in article
+        assert "#/benchmarks" not in article
     for path in ("/design", "/design/8", "/designs", "/blog/preview/fellows-v3"):
         get(path, 404)
     for viewer in (ROOT / "static/sciencevision/viewer").glob("*/*.html"):

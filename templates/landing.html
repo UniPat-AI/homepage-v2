@@ -31,8 +31,9 @@
         <p class="lede">Executable, expert-designed evaluations across coding, computer use, science, vision and prediction.</p>
         <div class="blist" data-stagger>
             {% for b in benchmarks %}
-            {% set href = b.meta.externalurl or url_for('benchmarks_detail', slug=b.slug) %}
-            <a class="brow" data-reveal href="{{ href }}"{% if b.meta.externalurl %} target="_blank" rel="noopener"{% endif %}>
+            {% set external = b.get('project_url') or b.meta.externalurl %}
+            {% set href = external or url_for('benchmarks_detail', slug=b.slug) %}
+            <a class="brow" data-reveal href="{{ href }}"{% if external %} target="_blank" rel="noopener noreferrer"{% endif %}>
                 <div class="h"><h3>{{ b.title }}</h3><span class="mono">{{ b.meta.domain }}</span></div>
                 <div class="more"><div><p>{{ b.summary }}</p></div></div>
             </a>

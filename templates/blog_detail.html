@@ -7,7 +7,10 @@
 {% block og_description %}{{ post.summary or post.title }}{% endblock %}
 {% block og_image %}{% if post.header_image.startswith('http') %}{{ post.header_image }}{% else %}{{ request.host_url.rstrip('/') }}{{ post.header_image }}{% endif %}{% endblock %}
 
-{% block head_extra %}{% if preview_siblings %}<meta name="robots" content="noindex">{% endif %}{% endblock %}
+{% block head_extra %}
+{% if preview_siblings %}<meta name="robots" content="noindex">{% endif %}
+{% if post.slug == 'ScienceLastExam' %}<link rel="stylesheet" href="{{ static_cdn('css/sle-blog.css') }}">{% endif %}
+{% endblock %}
 
 {% block content %}
 {% set layout = post.meta.get('layout') %}
@@ -42,7 +45,7 @@
 </section>
 {% endif %}
 
-<div class="paper" data-field-cover>
+<div class="paper{% if post.slug == 'ScienceLastExam' %} sle-paper{% endif %}" data-field-cover>
     <div class="container">
     {% if layout == 'paperbenchx' %}
     <div class="pbx-article-layout">
@@ -81,4 +84,7 @@
 </div>
 {% endblock %}
 
-{% block scripts %}{% include "_mathjax.html" %}{% endblock %}
+{% block scripts %}
+{% include "_mathjax.html" %}
+{% if post.slug == 'ScienceLastExam' %}<script src="{{ static_cdn('js/sle-blog.js') }}" defer></script>{% endif %}
+{% endblock %}

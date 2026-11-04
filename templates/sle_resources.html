@@ -1,0 +1,5 @@
+<nav class="sle-resources" aria-label="SLE resources">
+  <a href="#sle-results">Benchmark results <span aria-hidden="true">↓</span></a>
+  <a class="sle-resource-primary sle-project-link" href="{{ project_homepage }}"><strong>Homepage</strong> <span aria-hidden="true">↗</span></a>
+  {% for label, url in release_links %}<a href="{{ url }}" target="_blank" rel="noopener noreferrer">{{ label }} <span aria-hidden="true">↗</span></a>{% endfor %}
+</nav>

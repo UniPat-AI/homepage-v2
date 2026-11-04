@@ -112,6 +112,31 @@ python deploy/validate.py
 依赖变更后，还需要部署管理员重新构建预览环境的固定运行镜像。
 不要将任何密钥或密码提交到仓库。
 
+## SLE 页面迁移
+
+- Blog：`/blog/ScienceLastExam`；论文短链接 `/blog/SLE` 自动跳转。
+- 官网首页和 Benchmarks 列表中的 SLE 入口直接指向独立站；旧的
+  `/benchmarks/ScienceLastExam` 和 `/benchmarks/SLE` 地址也会跳转。
+- 所有入口默认指向 `https://sle.unipat.ai/#/home`，本机与内网预览保持一致。
+  旧 benchmark 地址使用 HTTP 302 自动跳转，响应正文保留英文提示和手动打开链接。
+  可通过 `SLE_PROJECT_ORIGIN` 显式指定开发目标；HTTP loopback 目标仅在本机请求中生效。
+  `SLE_REQUIRE_RELEASE=1` 禁止输出本机目标；可选 `SLE_PAPER_URL` 仅接受 HTTPS。
+- SLE 路由适配放在既有的 `app.py`，正文、9 张论文图和专属 CSS/JS 均位于
+  原有打包白名单内。无需部署新的根目录模块，也不搬入旧的 staging 安装脚本、
+  交互式 benchmark 页面、公开 trace 展示或私有投稿数据。
+- `tests/test_sle.py` 验证正文、图片校验值、作者单位、入口及其他项目兼容性；
+  `tests/test_sle_bundle.py` 在解包后的独立进程中验证运行。
+  `deploy/validate.py` 同时检查 SLE 重定向和全部页面资源。
+
+此迁移将 Markdown 固定为 **3.8.1**，`requirements.txt` 与
+`requirements.lock` 已同步。首次部署分支预览前，管理员需用新锁文件重建
+`deploy/preview/Dockerfile` 对应的运行镜像，并更新受保护配置里的
+`runtime_image` 与 `requirements_sha256`；不要跳过原有依赖哈希校验。
+正式部署仍由既有流程为每个版本安装独立环境。
+
+仓库本身为公开仓库：内网预览不意味着分支源码保密。SLE 草稿、署名和图表
+在获得公开授权前仅保留本地；不得自动推送本地迁移分支。
+
 ## OTS 数据目录
 
 编辑 `static/data/ots.json` 可以更新 Training & Validation OTS 页面。

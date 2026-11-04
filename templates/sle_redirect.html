@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block page_title %}Opening Science’s Last Exam · UniPat AI{% endblock %}
+{% block head_extra %}<meta name="robots" content="noindex">{% endblock %}
+{% block content %}
+<section class="phero" data-scene data-shape="sphere">
+    <div class="wrap"><div class="col">
+        <span class="mono">Science’s Last Exam</span>
+        <h1>Opening the SLE website.</h1>
+        <p>If you are not redirected automatically, use the button below.</p>
+        <div class="ctas">
+            <a class="btn btn-p" href="{{ destination }}" rel="noopener noreferrer">Open SLE <span aria-hidden="true">↗</span></a>
+            <a class="btn" href="{{ url_for('benchmarks_list') }}">Back to benchmarks</a>
+        </div>
+    </div></div>
+</section>
+{% endblock %}

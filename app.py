@@ -4,10 +4,11 @@ import pathlib
 import hashlib
 from datetime import datetime
 from typing import List, Dict, Any
+from urllib.parse import urlsplit
 
 import json
 
-from flask import Flask, render_template, abort, url_for, jsonify, request, Response, redirect, send_from_directory
+from flask import Flask, has_request_context, render_template, abort, url_for, jsonify, request, Response, redirect, send_from_directory
 from markupsafe import Markup, escape
 import markdown
 
@@ -24,6 +25,66 @@ OTS_CATALOG = BASE_DIR / "static" / "data" / "ots.json"
 CDN_URL = os.environ.get("CDN_URL", "").rstrip("/")
 
 app = Flask(__name__, template_folder="templates", static_folder="static")
+
+# Keep SLE's small routing adapter in the existing runtime entrypoint. The trusted
+# main-branch packager and installed host unpacker already allow app.py.
+SLE_ALIASES = {"sle", "sciencelastexam"}
+SLE_PUBLIC_ORIGIN = "https://sle.unipat.ai"
+SLE_LOCAL_HOSTS = {"localhost", "127.0.0.1", "::1"}
+
+
+def sle_project_origin(value, required=False):
+    if not value:
+        if required:
+            raise ValueError("A public SLE project origin is required")
+        return None
+    if not isinstance(value, str) or any(c.isspace() or ord(c) < 32 for c in value):
+        raise ValueError("Invalid SLE project origin")
+    try:
+        u = urlsplit(value)
+        port = u.port
+        if (u.scheme not in ("http", "https") or not u.hostname or u.username or u.password
+                or u.path not in ("", "/") or u.query or u.fragment
+                or (port is not None and port < 1)
+                or (u.scheme != "https" and u.hostname not in SLE_LOCAL_HOSTS)
+                or (required and (u.scheme != "https" or u.hostname in SLE_LOCAL_HOSTS))):
+            raise ValueError()
+    except ValueError:
+        raise ValueError("Invalid SLE project origin") from None
+    return value.rstrip("/")
+
+
+def sle_project_target(origin, request_host, require_release=False):
+    try:
+        host = urlsplit("//" + request_host)
+        local = host.hostname in SLE_LOCAL_HOSTS and not (host.username or host.password or host.path or host.query or host.fragment)
+    except ValueError:
+        local = False
+    target = sle_project_origin(origin) if origin else None
+    if target and urlsplit(target).hostname not in SLE_LOCAL_HOSTS:
+        return sle_project_origin(target, required=True)
+    if target and local and not require_release:
+        return target
+    # Local and intranet previews use the official site by default. A local
+    # development target requires an explicit environment setting.
+    return SLE_PUBLIC_ORIGIN
+
+
+def sle_homepage():
+    host = request.host if has_request_context() else ""
+    return sle_project_target(os.environ.get("SLE_PROJECT_ORIGIN", ""), host,
+                              os.environ.get("SLE_REQUIRE_RELEASE") == "1") + "/#/home"
+
+
+def sle_release_links(paper_url=""):
+    links = []
+    if paper_url:
+        u = urlsplit(paper_url)
+        if any(c.isspace() or ord(c) < 32 for c in paper_url) or u.scheme != "https" or not u.hostname or u.username or u.password:
+            raise ValueError("SLE_PAPER_URL must be an HTTPS URL")
+        links.append(("Paper", paper_url))
+    return links + [("GitHub", "https://github.com/UniPat-AI/SLE"),
+                    ("Dataset", "https://huggingface.co/datasets/UnipatAI/SLE")]
 
 # 静态文件版本号缓存（启动时计算，用于 CSS/JS 缓存失效）
 # 只对 CSS 和 JS 文件加版本号，图片/字体等大文件保持原样
@@ -85,6 +146,16 @@ def _parse_markdown(file_path: pathlib.Path) -> Dict[str, Any]:
     text = file_path.read_text(encoding="utf-8")
     md = markdown.Markdown(extensions=["fenced_code", "tables", "meta", "toc"])
     html = md.convert(text)
+
+    if file_path.name == "ScienceLastExam.md" and file_path.parent == BLOG_DIR:
+        homepage = sle_homepage()
+        html = html.replace("<!-- SLE_RESOURCES -->", render_template(
+            "sle_resources.html", project_homepage=homepage,
+            release_links=sle_release_links(os.environ.get("SLE_PAPER_URL", "")),
+        ))
+        html = html.replace("<!-- SLE_PROJECT_LINKS -->", render_template(
+            "sle_project_link.html", project_homepage=homepage,
+        ))
     
     # 如果配置了 CDN，替换静态资源路径
     if CDN_URL:
@@ -115,6 +186,8 @@ def _load_entries(directory: pathlib.Path) -> List[Dict[str, Any]]:
         parsed["title"] = meta.get("title", file_path.stem.replace("-", " ").title())
         parsed["summary"] = meta.get("summary") or meta.get("tagline") or ""
         parsed["header_image"] = _choose_header_image(meta, parsed["slug"])
+        if directory == BENCHMARKS_DIR and parsed["slug"] == "ScienceLastExam":
+            parsed["project_url"] = sle_homepage()
         entries.append(parsed)
     # Sort newest first
     return sorted(entries, key=lambda e: e["date"], reverse=True)
@@ -194,6 +267,8 @@ def blog_list():
 
 @app.route("/blog/<slug>")
 def blog_detail(slug: str):
+    if slug.lower() in SLE_ALIASES and slug != "ScienceLastExam":
+        return redirect(url_for("blog_detail", slug="ScienceLastExam"), code=301)
     post = _load_entry(BLOG_DIR, slug)
     return render_template("blog_detail.html", post=post)
 
@@ -227,6 +302,12 @@ def benchmarks_list():
 
 @app.route("/benchmarks/<slug>")
 def benchmarks_detail(slug: str):
+    if slug.lower() in SLE_ALIASES:
+        destination = sle_homepage()
+        response = redirect(destination, code=302)
+        response.set_data(render_template("sle_redirect.html", destination=destination))
+        response.headers["Cache-Control"] = "no-store"
+        return response
     entry = _load_entry(BENCHMARKS_DIR, slug)
     return render_template("benchmarks_detail.html", entry=entry)
 
@@ -336,7 +417,7 @@ def sitemap_xml():
         parsed = _parse_markdown(fp)
         meta = parsed["meta"]
         date_str = meta.get("date", today)
-        slug = fp.stem.lower()
+        slug = fp.stem if fp.stem == "ScienceLastExam" else fp.stem.lower()
         urls.append({
             "loc": f"{base}/blog/{slug}",
             "priority": "0.9",
@@ -346,6 +427,8 @@ def sitemap_xml():
 
     # 动态加入 benchmarks 条目
     for fp in sorted(BENCHMARKS_DIR.glob("*.md")):
+        if fp.stem == "ScienceLastExam":
+            continue
         parsed = _parse_markdown(fp)
         meta = parsed["meta"]
         date_str = meta.get("date", today)
