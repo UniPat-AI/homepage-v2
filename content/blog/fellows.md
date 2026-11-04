@@ -1,5 +1,5 @@
 Title: UniPat Fellows: Investing $15 Million to Reshape How Science Is Done
-Date: 2026-10-29
+Date: 2026-11-04
 Summary: UniPat Fellows brings scientific research and model development into the same feedback loop. Fellows work alongside our researchers and engineers to tackle important problems that AI still can’t solve—but should.
 HeaderImage: /static/images/fellows/cover-standard-1200.jpg
 Layout: feature
@@ -20,8 +20,10 @@ Layout: feature
 .fw4 a:hover { text-decoration: none; }
 
 /* 2 · Applications banner stays in the article flow so it never covers content. */
-.fw4-banner { position: relative; display: flex; align-items: center; gap: 18px; min-height: 64px; margin: 0 0 30px; padding: 10px 10px 10px 22px; border-radius: 16px; background: var(--ink); color: #edeff5; overflow: hidden; isolation: isolate; box-shadow: 0 18px 40px -24px rgba(18, 20, 28, .7); }
-.fw4-banner::before { content: ""; position: absolute; z-index: -1; inset: auto -10% -60px 30%; height: 120px; background: linear-gradient(90deg, transparent, rgba(15, 109, 112, .55) 30%, rgba(255, 90, 36, .55) 75%, rgba(255, 154, 90, .4)); filter: blur(34px); }
+/* Background gradients share the banner's rounded edge without a separate blurred layer. */
+.fw4-banner { position: relative; display: flex; align-items: center; gap: 18px; min-height: 64px; margin: 0 0 30px; padding: 10px 10px 10px 22px; border-radius: 16px;
+  background: radial-gradient(ellipse 48% 180% at 100% 100%, rgba(255, 90, 36, .48), rgba(255, 90, 36, 0)), radial-gradient(ellipse 32% 160% at 60% 100%, rgba(15, 109, 112, .45), rgba(15, 109, 112, 0)), var(--ink);
+  color: #edeff5; overflow: hidden; box-shadow: 0 18px 40px -24px rgba(18, 20, 28, .7); }
 .fw4-banner-text { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 14px; min-width: 0; flex: 1; font-family: var(--label); font-size: 12px; letter-spacing: .14em; text-transform: uppercase; }
 .fw4-banner-text strong { display: inline-flex; align-items: center; gap: 12px; color: #fff; font-weight: 600; }
 .fw4-banner-text strong::before { content: ""; flex: none; width: 8px; height: 8px; border-radius: 50%; background: var(--ember); box-shadow: 0 0 0 4px rgba(255, 90, 36, .22); animation: fw4-pulse 2.4s ease-in-out infinite; }
