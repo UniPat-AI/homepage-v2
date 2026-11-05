@@ -1,7 +1,15 @@
 {
   "source_repository": "UniPat-AI/UniPat_Homepage",
   "source_commit": "47e134c75372032b5c3941a5f48f4d0c7ba31d56",
-  "article_sha256": "817ba033ce5b87f703c0e27fb3a7e2b9de68fd3829ddc08634ca5afd60ba30c7",
+  "article_sha256": "4feef9a8b9198ee2dae0f69c3b7e52f248e36ce96352b850d8f675dfff60b34b",
+  "amendments": [
+    {
+      "date": "2026-11-05",
+      "description": "Add Steven Dillmann first in Advisory Committee and renumber affiliations in first-appearance order; scientific text and figures unchanged.",
+      "manuscript_commit": "48541a81c129521b4eab7c984ba740681e53426c",
+      "previous_article_sha256": "817ba033ce5b87f703c0e27fb3a7e2b9de68fd3829ddc08634ca5afd60ba30c7"
+    }
+  ],
   "assets": {
     "static/sle/blog-2026-10-25/agreement.png": "2879401ebdf101f51278a2cce8119ba9df5402e8182a0a9b77bf0e848212057a",
     "static/sle/blog-2026-10-25/case-analysis.png": "30c18ce2ba08485454043e832e8933a8d8710c19927e4ae5627e5040e007aeca",

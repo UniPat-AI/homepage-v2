@@ -61,7 +61,7 @@ c=Client(application, Response)
 kw=dict(base_url='https://unipat.ai')
 article=c.get('/blog/ScienceLastExam',**kw)
 assert article.status_code==200
-assert 'Soojung Yang<sup>2</sup>' in article.text and 'FutureHouse' in article.text
+assert 'Steven Dillmann<sup>2</sup>' in article.text and 'Soojung Yang<sup>3</sup>' in article.text and 'FutureHouse' in article.text
 assert '<!-- SLE_' not in article.text and 'localhost:' not in article.text
 class Assets(HTMLParser):
  def handle_starttag(self,tag,attrs):

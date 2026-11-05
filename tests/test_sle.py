@@ -107,15 +107,18 @@ class SLEMigrationTests(unittest.TestCase):
         for heading in ["Project Team", "Advisory Committee", "Wet-Lab Collaborators"]:
             self.assertIn("<strong>" + heading + "</strong>", text)
         names = text.split('<div class="sle-contributor-list">')[1].split("</div>")[0]
-        self.assertEqual(names.count('class="sle-author"'), 33)
+        self.assertEqual(names.count('class="sle-author"'), 34)
         self.assertNotIn("<a ", names)
         advisory = names.split("<strong>Advisory Committee</strong>")[1]
         self.assertLess(advisory.index("Soojung Yang"), advisory.index("Jianjun Wu"))
-        self.assertIn("Soojung Yang<sup>2</sup>", advisory)
+        self.assertLess(advisory.index("Steven Dillmann"), advisory.index("Soojung Yang"))
+        self.assertIn("Steven Dillmann<sup>2</sup>", advisory)
+        self.assertIn("Soojung Yang<sup>3</sup>", advisory)
+        self.assertIn("Stanford University", text)
         self.assertIn("FutureHouse, San Francisco, CA, USA", text)
         self.assertIn("Deep Principle", text)
         affiliations = text.split('<ol class="sle-affiliations"')[1].split("</ol>")[0]
-        self.assertEqual(re.findall(r'<li value="(\d+)">', affiliations), [str(n) for n in range(1, 14)])
+        self.assertEqual(re.findall(r'<li value="(\d+)">', affiliations), [str(n) for n in range(1, 15)])
         for phrase in ["100 public tasks", "16 private tasks", "1,155 scored runs", "thirteen configurations"]:
             self.assertIn(phrase, text)
 
@@ -130,7 +133,7 @@ class SLEMigrationTests(unittest.TestCase):
             with self.client.get(asset) as response:
                 self.assertEqual(response.status_code, 200, asset)
 
-    def test_editorial_text_was_not_changed_by_migration(self):
+    def test_article_text_matches_the_approved_snapshot(self):
         evidence = json.loads((ROOT / "tests/fixtures/sle-migration.json").read_text())
         text = (ROOT / "content/blog/ScienceLastExam.md").read_text()
         canonical = "\n".join(line for line in text.splitlines() if line.strip() and not line.startswith(("<link ", "<script ")))
