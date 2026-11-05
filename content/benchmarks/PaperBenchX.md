@@ -15,7 +15,7 @@ HeaderImage: /static/paperbenchx/cover/paperbenchx-scientist-cover.png
 <a href="/blog/PaperBenchX">Read the blog</a>
 <a href="/benchmarks/PaperBenchX" class="primary">Leaderboard</a>
 <a href="https://github.com/UniPat-AI/PaperBenchX" target="_blank" rel="noopener noreferrer">Code &amp; tasks</a>
-<span class="pbxb-link-disabled" aria-disabled="true">Paper <small>Coming soon</small></span>
+<a href="https://arxiv.org/pdf/2610.39744" target="_blank" rel="noopener noreferrer">Paper</a>
 </div>
 </div>
 

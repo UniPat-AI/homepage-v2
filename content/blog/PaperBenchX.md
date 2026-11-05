@@ -524,11 +524,11 @@ Layout: paperbenchx
 <h2 class="pbx-title" id="pbx-contributors-heading">Contributors</h2>
 <div class="pbx-contributors-box">
 <div class="pbx-contributor-list">
-<p><strong>Core contributors</strong><span>Ruoyu Wu<sup>1</sup>, Zengji Tu<sup>1</sup>, Aolong Sun<sup>1</sup>, Tianyi Ma<sup>1</sup>, Jin Chen<sup>2</sup>, Shen Yan<sup>2</sup>, Liang Chen<sup>1</sup>, Kuan Li<sup>1</sup></span></p>
-<p><strong>Contributors</strong><span>Junren Li<sup>1</sup>, Li Fu<sup>1</sup>, Ziyan Zhang<sup>1</sup>, Pinrui Huang<sup>1</sup>, Xinbo Xu<sup>1</sup>, Xiaochen Wang<sup>1</sup>, Xu Li<sup>2</sup>, Zhongfei Hou<sup>2</sup>, Nan Shu<sup>2</sup>, Chengda Wu<sup>1</sup>, Yutao Zhou<sup>1</sup>, Chaoyi Huang<sup>2</sup>, Sihang Yuan<sup>2</sup>, Zihan Xu<sup>2</sup></span></p>
-<p><strong>Advisors</strong><span>Baobao Chang<sup>3</sup>, Lin Chang<sup>3</sup>, Jianjun Wu<sup>3</sup></span></p>
+<p><strong>Core contributors</strong><span>Ruoyu Wu<sup>1</sup>, Zengji Tu<sup>1</sup>, Aolong Sun<sup>1</sup>, Tianyi Ma<sup>1</sup>, Liang Chen<sup>1</sup>, Kuan Li<sup>1</sup></span></p>
+<p><strong>Contributors</strong><span>Junren Li<sup>1</sup>, Xinbo Xu<sup>1</sup>, Li Fu<sup>1</sup>, Ziyan Zhang<sup>1</sup>, Pinrui Huang<sup>1</sup>, Xiaochen Wang<sup>1</sup>, Chengda Wu<sup>1</sup>, Yutao Zhou<sup>1</sup>, Jin Chen, Shen Yan, Xu Li, Zhongfei Hou, Nan Shu, Chaoyi Huang, Sihang Yuan, Zihan Xu</span></p>
+<p><strong>Advisors</strong><span>Baobao Chang<sup>2</sup>, Lin Chang<sup>2</sup>, Jianjun Wu<sup>2</sup></span></p>
 </div>
-<p class="pbx-affiliations"><sup>1</sup>UniPat AI <span aria-hidden="true">·</span> <sup>2</sup>ByteDance Seed <span aria-hidden="true">·</span> <sup>3</sup>Peking University</p>
+<p class="pbx-affiliations"><sup>1</sup>UniPat AI <span aria-hidden="true">·</span> <sup>2</sup>Peking University</p>
 </div>
 <p class="pbx-collaboration"><strong>For further collaboration on PaperBenchX, contact <a href="mailto:paperbenchx@unipat.ai">paperbenchx@unipat.ai</a>.</strong></p>
 </section>
