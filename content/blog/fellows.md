@@ -123,8 +123,6 @@ Layout: feature
 .fw4-way h3 { font-size: 20px; font-weight: 600; letter-spacing: -.015em; margin-bottom: 10px; }
 .fw4-way p:last-child { font-size: 16px; line-height: 1.6; }
 .fw4-way:not(.is-dark) p:last-child { color: var(--soft); }
-.fw4-loc { display: flex; gap: 10px; align-items: flex-start; font-size: 15px; color: var(--muted); }
-.fw4-loc svg { flex: none; margin-top: 4px; color: var(--teal); }
 
 /* Rail */
 .fw4-rail { position: sticky; top: calc(var(--top) + 26px); align-self: start; }
@@ -207,7 +205,7 @@ Layout: feature
 <div><dt>Investment</dt><dd>$15M<small>over the next year</small></dd></div>
 <div><dt>API credits</dt><dd>$75K<small>frontier-model access</small></dd></div>
 <div><dt>Formats</dt><dd>2 ways<small>full-time or project-based</small></dd></div>
-<div><dt>Based in</dt><dd>Beijing<small>Zhongguancun · hybrid possible</small></dd></div>
+<div><dt>Work mode</dt><dd>Onsite / Remote<small>flexible options</small></dd></div>
 </dl>
 <div class="fw4-main">
 <div>
@@ -315,7 +313,6 @@ Layout: feature
 <div class="fw4-way is-dark"><p class="fw4-way-tag">Long-term</p><h3>Full-time Fellow</h3><p>Join UniPat AI to pursue long-term research and real-world applications.</p></div>
 <div class="fw4-way"><p class="fw4-way-tag">3 months or longer</p><h3>Project-based Fellow</h3><p>Work with us on a project for three months or longer while continuing your academic or professional commitments.</p></div>
 </div>
-<p class="fw4-loc"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg>We encourage Fellows to work with us in person in Zhongguancun, Beijing; hybrid arrangements can be discussed.</p>
 </section>
 <section class="fw4-final" id="apply">
 <p>The question that starts every Fellowship</p>
