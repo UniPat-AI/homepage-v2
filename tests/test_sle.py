@@ -117,6 +117,8 @@ class SLEMigrationTests(unittest.TestCase):
         self.assertIn("Yuanqi Du<sup>3</sup>", advisory)
         self.assertIn("Soojung Yang<sup>4</sup>", advisory)
         self.assertIn("Shizhe Diao<sup>5</sup>", advisory)
+        self.assertIn("Liang Chen<sup>1†‡</sup>", names)
+        self.assertIn("<sup>‡</sup>Project leader: Liang Chen.", text)
         self.assertIn("The Hong Kong University of Science and Technology</span>", text)
         self.assertLess(advisory.index("Yuanqi Du"), advisory.index("Soojung Yang"))
         self.assertIn("Cornell University", text)

@@ -1,7 +1,7 @@
 {
   "source_repository": "UniPat-AI/UniPat_Homepage",
   "source_commit": "47e134c75372032b5c3941a5f48f4d0c7ba31d56",
-  "article_sha256": "ba61b5bb2236631cd9acc32f3c49e977d895d84783578b62a2d4883c08f1c1dc",
+  "article_sha256": "21116416e5780678c175d67cd7fb6a5e4873ab4446b8eb6826d859a149e8fc71",
   "amendments": [
     {
       "date": "2026-11-05",
@@ -26,6 +26,12 @@
       "description": "Open the summary and deck with what prediction means for science, matching the manuscript introduction; results and figures unchanged.",
       "manuscript_commit": "d0ab8fa",
       "previous_article_sha256": "831aa3c1da49474ae47187e6552d73d894c996b88b0d689ca8a7fe8e6c8855d5"
+    },
+    {
+      "date": "2026-11-06",
+      "description": "Mark Liang Chen as project leader (‡).",
+      "manuscript_commit": "8f40214",
+      "previous_article_sha256": "ba61b5bb2236631cd9acc32f3c49e977d895d84783578b62a2d4883c08f1c1dc"
     }
   ],
   "assets": {
