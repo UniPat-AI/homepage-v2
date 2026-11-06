@@ -1,7 +1,7 @@
 {
   "source_repository": "UniPat-AI/UniPat_Homepage",
   "source_commit": "47e134c75372032b5c3941a5f48f4d0c7ba31d56",
-  "article_sha256": "8e7d40326e209f0e9a9c88e882854ffe09f0fb943ff9df2daea3e9867ee991ce",
+  "article_sha256": "831aa3c1da49474ae47187e6552d73d894c996b88b0d689ca8a7fe8e6c8855d5",
   "amendments": [
     {
       "date": "2026-11-05",
@@ -26,7 +26,7 @@
     "static/sle/blog-2026-10-25/agreement.png": "2879401ebdf101f51278a2cce8119ba9df5402e8182a0a9b77bf0e848212057a",
     "static/sle/blog-2026-10-25/case-analysis.png": "30c18ce2ba08485454043e832e8933a8d8710c19927e4ae5627e5040e007aeca",
     "static/sle/blog-2026-10-25/cost-frontier.png": "2aa23e2dedbdeea99c2c486d8e621d6bf7e05f05e0f7b030a313fad62217943b",
-    "static/sle/blog-2026-10-25/coverage.png": "13b68bee99dabf63475c49bf6c5c34d884b4a4b004546bfb5a4e9bdc8dbe4f12",
+    "static/sle/blog-2026-10-25/coverage.png": "5dd8ec607cd144a7d268183b35f8542032eff57d12decf2069ea60a546447387",
     "static/sle/blog-2026-10-25/overview.png": "27a6127bad1237e9b9ba34e29b4a3b87e49949f372ae797183b356efc193afef",
     "static/sle/blog-2026-10-25/pooled-results.png": "5bf2c2e4b9019ece0f74bfaea4c5b9d944b7f6181bc29766e5478ae512a4270a",
     "static/sle/blog-2026-10-25/private-results.png": "2f4ffb554c52647428f9253ea8071e6a797db00bdca13e4786f6d7f683868031",
