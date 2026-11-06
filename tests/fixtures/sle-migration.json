@@ -1,7 +1,7 @@
 {
   "source_repository": "UniPat-AI/UniPat_Homepage",
   "source_commit": "47e134c75372032b5c3941a5f48f4d0c7ba31d56",
-  "article_sha256": "f1f9e39cfe803e55571e4bea8a4dd48fc7a1e81bf5b20963b1d760d1500ee944",
+  "article_sha256": "0af44003e6fe7c3de4c2e6fb41e9a33bb1f6ae50e373871d9911a449e8303d40",
   "amendments": [
     {
       "date": "2026-11-05",
@@ -14,13 +14,19 @@
       "description": "Rename to Science Prediction Universe (SPU) with the /blog/SciencePredictionUniverse slug and SPU cover wordmark; add Shizhe Diao (HKUST) after Soojung Yang and renumber affiliations; scientific text and figures unchanged.",
       "manuscript_commit": "a8cdbe4",
       "previous_article_sha256": "e6b73378c701310d26b12cd2cb1af5b02cfb4767e03448e5b78b341cc560dc40"
+    },
+    {
+      "date": "2026-11-06",
+      "description": "Coverage figure centre label reads SPU (figure otherwise unchanged).",
+      "manuscript_commit": "06c3d87",
+      "previous_article_sha256": "f1f9e39cfe803e55571e4bea8a4dd48fc7a1e81bf5b20963b1d760d1500ee944"
     }
   ],
   "assets": {
     "static/sle/blog-2026-10-25/agreement.png": "2879401ebdf101f51278a2cce8119ba9df5402e8182a0a9b77bf0e848212057a",
     "static/sle/blog-2026-10-25/case-analysis.png": "30c18ce2ba08485454043e832e8933a8d8710c19927e4ae5627e5040e007aeca",
     "static/sle/blog-2026-10-25/cost-frontier.png": "2aa23e2dedbdeea99c2c486d8e621d6bf7e05f05e0f7b030a313fad62217943b",
-    "static/sle/blog-2026-10-25/coverage.png": "194288108ce7c7e0a412ba5b8007ff0be8ade3c43f22805903b1a846cdefca09",
+    "static/sle/blog-2026-10-25/coverage.png": "574670da4b6217d19b0f0602d082999d4f461a0cf169ed79b2b17393367243ec",
     "static/sle/blog-2026-10-25/overview.png": "27a6127bad1237e9b9ba34e29b4a3b87e49949f372ae797183b356efc193afef",
     "static/sle/blog-2026-10-25/pooled-results.png": "5bf2c2e4b9019ece0f74bfaea4c5b9d944b7f6181bc29766e5478ae512a4270a",
     "static/sle/blog-2026-10-25/private-results.png": "2f4ffb554c52647428f9253ea8071e6a797db00bdca13e4786f6d7f683868031",
