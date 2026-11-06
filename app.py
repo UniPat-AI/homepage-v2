@@ -28,7 +28,8 @@ app = Flask(__name__, template_folder="templates", static_folder="static")
 
 # Keep SLE's small routing adapter in the existing runtime entrypoint. The trusted
 # main-branch packager and installed host unpacker already allow app.py.
-SLE_ALIASES = {"sle", "sciencelastexam"}
+SPU_SLUG = "SciencePredictionUniverse"
+SLE_ALIASES = {"spu", "sciencepredictionuniverse", "sle", "sciencelastexam"}
 SLE_PUBLIC_ORIGIN = "https://sle.unipat.ai"
 SLE_LOCAL_HOSTS = {"localhost", "127.0.0.1", "::1"}
 
@@ -83,8 +84,8 @@ def sle_release_links(paper_url=""):
         if any(c.isspace() or ord(c) < 32 for c in paper_url) or u.scheme != "https" or not u.hostname or u.username or u.password:
             raise ValueError("SLE_PAPER_URL must be an HTTPS URL")
         links.append(("Paper", paper_url))
-    return links + [("GitHub", "https://github.com/UniPat-AI/SLE"),
-                    ("Dataset", "https://huggingface.co/datasets/UnipatAI/SLE")]
+    return links + [("GitHub", "https://github.com/UniPat-AI/SPU"),
+                    ("Dataset", "https://huggingface.co/datasets/UnipatAI/SPU")]
 
 # 静态文件版本号缓存（启动时计算，用于 CSS/JS 缓存失效）
 # 只对 CSS 和 JS 文件加版本号，图片/字体等大文件保持原样
@@ -147,7 +148,7 @@ def _parse_markdown(file_path: pathlib.Path) -> Dict[str, Any]:
     md = markdown.Markdown(extensions=["fenced_code", "tables", "meta", "toc"])
     html = md.convert(text)
 
-    if file_path.name == "ScienceLastExam.md" and file_path.parent == BLOG_DIR:
+    if file_path.name == SPU_SLUG + ".md" and file_path.parent == BLOG_DIR:
         homepage = sle_homepage()
         html = html.replace("<!-- SLE_RESOURCES -->", render_template(
             "sle_resources.html", project_homepage=homepage,
@@ -186,7 +187,7 @@ def _load_entries(directory: pathlib.Path) -> List[Dict[str, Any]]:
         parsed["title"] = meta.get("title", file_path.stem.replace("-", " ").title())
         parsed["summary"] = meta.get("summary") or meta.get("tagline") or ""
         parsed["header_image"] = _choose_header_image(meta, parsed["slug"])
-        if directory == BENCHMARKS_DIR and parsed["slug"] == "ScienceLastExam":
+        if directory == BENCHMARKS_DIR and parsed["slug"] == SPU_SLUG:
             parsed["project_url"] = sle_homepage()
         entries.append(parsed)
     # Sort newest first
@@ -267,8 +268,8 @@ def blog_list():
 
 @app.route("/blog/<slug>")
 def blog_detail(slug: str):
-    if slug.lower() in SLE_ALIASES and slug != "ScienceLastExam":
-        return redirect(url_for("blog_detail", slug="ScienceLastExam"), code=301)
+    if slug.lower() in SLE_ALIASES and slug != SPU_SLUG:
+        return redirect(url_for("blog_detail", slug=SPU_SLUG), code=301)
     post = _load_entry(BLOG_DIR, slug)
     return render_template("blog_detail.html", post=post)
 
@@ -417,7 +418,7 @@ def sitemap_xml():
         parsed = _parse_markdown(fp)
         meta = parsed["meta"]
         date_str = meta.get("date", today)
-        slug = fp.stem if fp.stem == "ScienceLastExam" else fp.stem.lower()
+        slug = fp.stem if fp.stem == SPU_SLUG else fp.stem.lower()
         urls.append({
             "loc": f"{base}/blog/{slug}",
             "priority": "0.9",
@@ -427,7 +428,7 @@ def sitemap_xml():
 
     # 动态加入 benchmarks 条目
     for fp in sorted(BENCHMARKS_DIR.glob("*.md")):
-        if fp.stem == "ScienceLastExam":
+        if fp.stem == SPU_SLUG:
             continue
         parsed = _parse_markdown(fp)
         meta = parsed["meta"]

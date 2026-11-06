@@ -22,7 +22,7 @@ class SLEBundleTests(unittest.TestCase):
 
     def test_sle_uses_existing_runtime_paths_without_widening_the_allowlist(self):
         for name in ["app.py", "templates/sle_resources.html", "static/css/sle-blog.css",
-                     "content/blog/ScienceLastExam.md", "content/benchmarks/ScienceLastExam.md"]:
+                     "content/blog/SciencePredictionUniverse.md", "content/benchmarks/SciencePredictionUniverse.md"]:
             self.assertTrue(allowed(name), name)
         for name in ["sle_research.py", "sle_publication.py", ".env", "artifacts/review.json", "tests/fixtures/sle-migration.json"]:
             self.assertFalse(allowed(name), name)
@@ -59,7 +59,7 @@ from werkzeug.test import Client
 from werkzeug.wrappers import Response
 c=Client(application, Response)
 kw=dict(base_url='https://unipat.ai')
-article=c.get('/blog/ScienceLastExam',**kw)
+article=c.get('/blog/SciencePredictionUniverse',**kw)
 assert article.status_code==200
 assert 'Steven Dillmann<sup>2</sup>' in article.text and 'Yuanqi Du<sup>3</sup>' in article.text and 'Soojung Yang<sup>4</sup>' in article.text and 'FutureHouse' in article.text
 assert '<!-- SLE_' not in article.text and 'localhost:' not in article.text
@@ -72,7 +72,7 @@ Assets().feed(article.text)
 assert c.get('/benchmarks/SLE',**kw).headers['Location']=='https://sle.unipat.ai/#/home'
 assert 'If you are not redirected automatically' in c.get('/benchmarks/SLE',**kw).text
 assert 'href="https://sle.unipat.ai/#/home"' in c.get('/benchmarks').text
-assert c.get('/blog/SLE',**kw).headers['Location']=='/blog/ScienceLastExam'
+assert c.get('/blog/SLE',**kw).headers['Location']=='/blog/SciencePredictionUniverse'
 assert c.get('/_health',**kw).json['release']=='a'*40
 assert c.get('/ots',**kw).status_code==200
 assert not Path('sle_publication.py').exists()

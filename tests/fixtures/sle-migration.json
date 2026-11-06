@@ -1,13 +1,19 @@
 {
   "source_repository": "UniPat-AI/UniPat_Homepage",
   "source_commit": "47e134c75372032b5c3941a5f48f4d0c7ba31d56",
-  "article_sha256": "e6b73378c701310d26b12cd2cb1af5b02cfb4767e03448e5b78b341cc560dc40",
+  "article_sha256": "f1f9e39cfe803e55571e4bea8a4dd48fc7a1e81bf5b20963b1d760d1500ee944",
   "amendments": [
     {
       "date": "2026-11-05",
       "description": "Add Steven Dillmann first in Advisory Committee and renumber affiliations in first-appearance order; scientific text and figures unchanged.",
       "manuscript_commit": "48541a81c129521b4eab7c984ba740681e53426c",
       "previous_article_sha256": "817ba033ce5b87f703c0e27fb3a7e2b9de68fd3829ddc08634ca5afd60ba30c7"
+    },
+    {
+      "date": "2026-11-06",
+      "description": "Rename to Science Prediction Universe (SPU) with the /blog/SciencePredictionUniverse slug and SPU cover wordmark; add Shizhe Diao (HKUST) after Soojung Yang and renumber affiliations; scientific text and figures unchanged.",
+      "manuscript_commit": "a8cdbe4",
+      "previous_article_sha256": "e6b73378c701310d26b12cd2cb1af5b02cfb4767e03448e5b78b341cc560dc40"
     }
   ],
   "assets": {

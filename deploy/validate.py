@@ -30,7 +30,7 @@ def validate():
     for area in ("blog", "benchmarks"):
         paths.extend("/" + area + "/" + p.stem for p in (ROOT / "content" / area).glob("*.md"))
     for path in paths:
-        if path == "/benchmarks/ScienceLastExam":
+        if path in ("/benchmarks/SciencePredictionUniverse", "/benchmarks/ScienceLastExam"):
             response = get(path, 302)
             from app import sle_homepage
             with app.test_request_context(base_url="https://unipat.ai"):
@@ -48,11 +48,12 @@ def validate():
     assert "Allow: /" in get("/robots.txt").text
     get("/sitemap.xml")
     assert get("/_health").json == {"status": "ok", "release": RELEASE}
-    if (ROOT / "content/blog/ScienceLastExam.md").exists():
-        for short in ("/blog/SLE", "/blog/sciencelastexam"):
-            assert get(short, 301).headers["Location"] == "/blog/ScienceLastExam"
+    if (ROOT / "content/blog/SciencePredictionUniverse.md").exists():
+        for short in ("/blog/SPU", "/blog/SLE", "/blog/sciencelastexam"):
+            assert get(short, 301).headers["Location"] == "/blog/SciencePredictionUniverse"
+        assert get("/benchmarks/SPU", 302).headers["Location"] == expected
         assert get("/benchmarks/SLE", 302).headers["Location"] == expected
-        article = get("/blog/ScienceLastExam").text
+        article = get("/blog/SciencePredictionUniverse").text
         assert "<!-- SLE_" not in article and "localhost:" not in article
         assert 'id="sle-contributors"' in article and 'id="sle-results"' in article
         assert "#/benchmarks" not in article

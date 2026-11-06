@@ -9,7 +9,7 @@
 
 {% block head_extra %}
 {% if preview_siblings %}<meta name="robots" content="noindex">{% endif %}
-{% if post.slug == 'ScienceLastExam' %}<link rel="stylesheet" href="{{ static_cdn('css/sle-blog.css') }}">{% endif %}
+{% if post.slug == 'SciencePredictionUniverse' %}<link rel="stylesheet" href="{{ static_cdn('css/sle-blog.css') }}">{% endif %}
 {% endblock %}
 
 {% block content %}
@@ -45,7 +45,7 @@
 </section>
 {% endif %}
 
-<div class="paper{% if post.slug == 'ScienceLastExam' %} sle-paper{% endif %}" data-field-cover>
+<div class="paper{% if post.slug == 'SciencePredictionUniverse' %} sle-paper{% endif %}" data-field-cover>
     <div class="container">
     {% if layout == 'paperbenchx' %}
     <div class="pbx-article-layout">
@@ -86,5 +86,5 @@
 
 {% block scripts %}
 {% include "_mathjax.html" %}
-{% if post.slug == 'ScienceLastExam' %}<script src="{{ static_cdn('js/sle-blog.js') }}" defer></script>{% endif %}
+{% if post.slug == 'SciencePredictionUniverse' %}<script src="{{ static_cdn('js/sle-blog.js') }}" defer></script>{% endif %}
 {% endblock %}
