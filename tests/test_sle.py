@@ -107,18 +107,22 @@ class SLEMigrationTests(unittest.TestCase):
         for heading in ["Project Team", "Advisory Committee", "Wet-Lab Collaborators"]:
             self.assertIn("<strong>" + heading + "</strong>", text)
         names = text.split('<div class="sle-contributor-list">')[1].split("</div>")[0]
-        self.assertEqual(names.count('class="sle-author"'), 34)
+        self.assertEqual(names.count('class="sle-author"'), 35)
         self.assertNotIn("<a ", names)
         advisory = names.split("<strong>Advisory Committee</strong>")[1]
         self.assertLess(advisory.index("Soojung Yang"), advisory.index("Jianjun Wu"))
         self.assertLess(advisory.index("Steven Dillmann"), advisory.index("Soojung Yang"))
         self.assertIn("Steven Dillmann<sup>2</sup>", advisory)
-        self.assertIn("Soojung Yang<sup>3</sup>", advisory)
+        self.assertIn("Yuanqi Du<sup>3</sup>", advisory)
+        self.assertIn("Soojung Yang<sup>4</sup>", advisory)
+        self.assertLess(advisory.index("Yuanqi Du"), advisory.index("Soojung Yang"))
+        self.assertIn("Cornell University", text)
+        self.assertEqual(text.count('src="/static/sle/institution-marks/'), 13)
         self.assertIn("Stanford University", text)
-        self.assertIn("FutureHouse, San Francisco, CA, USA", text)
+        self.assertIn("FutureHouse", text)
         self.assertIn("Deep Principle", text)
         affiliations = text.split('<ol class="sle-affiliations"')[1].split("</ol>")[0]
-        self.assertEqual(re.findall(r'<li value="(\d+)">', affiliations), [str(n) for n in range(1, 15)])
+        self.assertEqual(re.findall(r'<li value="(\d+)">', affiliations), [str(n) for n in range(1, 16)])
         for phrase in ["100 public tasks", "16 private tasks", "1,155 scored runs", "thirteen configurations"]:
             self.assertIn(phrase, text)
 
