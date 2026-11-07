@@ -117,7 +117,7 @@ python deploy/validate.py
 - Blog：`/blog/SciencePredictionUniverse`；短链接 `/blog/SPU`，以及旧的 `/blog/SLE`、`/blog/ScienceLastExam` 自动跳转。
 - 官网首页和 Benchmarks 列表中的 SPU 入口直接指向独立站；`/benchmarks/SPU`
   以及旧的 `/benchmarks/ScienceLastExam`、`/benchmarks/SLE` 地址也会跳转。
-- 所有入口默认指向 `https://sle.unipat.ai/#/home`，本机与内网预览保持一致。
+- 所有入口默认指向 `https://spu.unipat.ai/#/home`，本机与内网预览保持一致。
   旧 benchmark 地址使用 HTTP 302 自动跳转，响应正文保留英文提示和手动打开链接。
   可通过 `SLE_PROJECT_ORIGIN` 显式指定开发目标；HTTP loopback 目标仅在本机请求中生效。
   `SLE_REQUIRE_RELEASE=1` 禁止输出本机目标；可选 `SLE_PAPER_URL` 仅接受 HTTPS。

@@ -69,9 +69,9 @@ class Assets(HTMLParser):
    if key in ('src','href') and value and value.startswith(('/static/sle/','/static/css/sle-','/static/js/sle-')):
     r=c.get(value,**kw);assert r.status_code==200,(value,r.status_code)
 Assets().feed(article.text)
-assert c.get('/benchmarks/SLE',**kw).headers['Location']=='https://sle.unipat.ai/#/home'
+assert c.get('/benchmarks/SLE',**kw).headers['Location']=='https://spu.unipat.ai/#/home'
 assert 'If you are not redirected automatically' in c.get('/benchmarks/SLE',**kw).text
-assert 'href="https://sle.unipat.ai/#/home"' in c.get('/benchmarks').text
+assert 'href="https://spu.unipat.ai/#/home"' in c.get('/benchmarks').text
 assert c.get('/blog/SLE',**kw).headers['Location']=='/blog/SciencePredictionUniverse'
 assert c.get('/_health',**kw).json['release']=='a'*40
 assert c.get('/ots',**kw).status_code==200

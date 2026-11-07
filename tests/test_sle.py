@@ -39,9 +39,9 @@ class SLEMigrationTests(unittest.TestCase):
 
     def test_entry_is_direct_on_both_home_and_benchmark_list(self):
         for host, target in [
-            ("http://localhost:18480", "https://sle.unipat.ai/#/home"),
-            ("https://unipat.ai", "https://sle.unipat.ai/#/home"),
-            ("http://feature.unipat.10.0.0.214.sslip.io", "https://sle.unipat.ai/#/home"),
+            ("http://localhost:18480", "https://spu.unipat.ai/#/home"),
+            ("https://unipat.ai", "https://spu.unipat.ai/#/home"),
+            ("http://feature.unipat.10.0.0.214.sslip.io", "https://spu.unipat.ai/#/home"),
         ]:
             for route in ["/", "/benchmarks"]:
                 response = self.client.get(route, base_url=host)
@@ -56,9 +56,9 @@ class SLEMigrationTests(unittest.TestCase):
         for route in ["/benchmarks/SciencePredictionUniverse", "/benchmarks/SPU", "/benchmarks/ScienceLastExam", "/benchmarks/SLE", "/benchmarks/sciencelastexam?next=https://evil.example"]:
             response = self.client.get(route, base_url="https://unipat.ai")
             self.assertEqual(response.status_code, 302)
-            self.assertEqual(response.headers["Location"], "https://sle.unipat.ai/#/home")
+            self.assertEqual(response.headers["Location"], "https://spu.unipat.ai/#/home")
             self.assertIn("If you are not redirected automatically", response.text)
-            self.assertIn('href="https://sle.unipat.ai/#/home"', response.text)
+            self.assertIn('href="https://spu.unipat.ai/#/home"', response.text)
             self.assertIn("Open SPU", response.text)
             self.assertEqual(response.headers["Cache-Control"], "no-store")
         for route in ["/blog/SPU", "/blog/spu", "/blog/sciencepredictionuniverse", "/blog/SLE", "/blog/sciencelastexam", "/blog/sle"]:
@@ -73,10 +73,10 @@ class SLEMigrationTests(unittest.TestCase):
             with self.subTest(value=value), self.assertRaises(ValueError):
                 sle_project_origin(value, required=True)
         for host in ["unipat.ai", "localhost.evil.example", "evil.example@localhost", "up-demo.unipat.10.0.0.214.sslip.io"]:
-            self.assertEqual(sle_project_target("http://localhost:18476", host), "https://sle.unipat.ai")
-        self.assertEqual(sle_project_target(None, "[::1]:18480"), "https://sle.unipat.ai")
+            self.assertEqual(sle_project_target("http://localhost:18476", host), "https://spu.unipat.ai")
+        self.assertEqual(sle_project_target(None, "[::1]:18480"), "https://spu.unipat.ai")
         self.assertEqual(sle_project_target("http://localhost:18476", "localhost:18480"), "http://localhost:18476")
-        self.assertEqual(sle_project_target(None, "localhost:18480", True), "https://sle.unipat.ai")
+        self.assertEqual(sle_project_target(None, "localhost:18480", True), "https://spu.unipat.ai")
         with patch.dict(os.environ, {"SLE_PROJECT_ORIGIN": "https://sle.example.org"}):
             self.assertEqual(self.client.get("/benchmarks/SLE").headers["Location"], "https://sle.example.org/#/home")
 
@@ -99,7 +99,7 @@ class SLEMigrationTests(unittest.TestCase):
         self.assertEqual(len(page.ids), len(set(page.ids)))
         self.assertFalse({a[1:] for a in page.anchors if a.startswith("#")} - set(page.ids))
         self.assertIn("#sle-results", page.anchors)
-        self.assertIn("https://sle.unipat.ai/#/home", page.anchors)
+        self.assertIn("https://spu.unipat.ai/#/home", page.anchors)
         self.assertIn("https://github.com/UniPat-AI/SPU", page.anchors)
         self.assertIn("https://huggingface.co/datasets/UnipatAI/SPU", page.anchors)
 

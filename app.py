@@ -30,7 +30,7 @@ app = Flask(__name__, template_folder="templates", static_folder="static")
 # main-branch packager and installed host unpacker already allow app.py.
 SPU_SLUG = "SciencePredictionUniverse"
 SLE_ALIASES = {"spu", "sciencepredictionuniverse", "sle", "sciencelastexam"}
-SLE_PUBLIC_ORIGIN = "https://sle.unipat.ai"
+SPU_PUBLIC_ORIGIN = SLE_PUBLIC_ORIGIN = "https://spu.unipat.ai"
 SLE_LOCAL_HOSTS = {"localhost", "127.0.0.1", "::1"}
 
 
