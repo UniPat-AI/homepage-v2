@@ -1,7 +1,7 @@
 {
   "source_repository": "UniPat-AI/UniPat_Homepage",
   "source_commit": "47e134c75372032b5c3941a5f48f4d0c7ba31d56",
-  "article_sha256": "802897d1ec5253f4d8f544a97db83849dd65a09bcdecf8b16f8c480369734611",
+  "article_sha256": "154f1d58a35581f0f807a90bc7c79902a0e577855699e818cdd98960a133df32",
   "amendments": [
     {
       "date": "2026-11-05",
@@ -38,6 +38,12 @@
       "description": "Ranking figure now also shows the 28 shared tasks (hatched bars), as in the manuscript's Figure 1; caption extended.",
       "manuscript_commit": "f50bd92",
       "previous_article_sha256": "21116416e5780678c175d67cd7fb6a5e4873ab4446b8eb6826d859a149e8fc71"
+    },
+    {
+      "date": "2026-11-07",
+      "description": "Add an article title above the deck; show each institution mark beside its affiliation instead of a separate logo row.",
+      "manuscript_commit": "2d99bc4",
+      "previous_article_sha256": "802897d1ec5253f4d8f544a97db83849dd65a09bcdecf8b16f8c480369734611"
     }
   ],
   "assets": {

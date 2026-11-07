@@ -122,7 +122,7 @@ class SLEMigrationTests(unittest.TestCase):
         self.assertIn("The Hong Kong University of Science and Technology</span>", text)
         self.assertLess(advisory.index("Yuanqi Du"), advisory.index("Soojung Yang"))
         self.assertIn("Cornell University", text)
-        self.assertEqual(text.count('src="/static/sle/institution-marks/'), 13)
+        self.assertEqual(text.count('src="/static/sle/institution-marks/'), 16)
         self.assertIn("Stanford University", text)
         self.assertIn("FutureHouse", text)
         self.assertIn("Deep Principle", text)
